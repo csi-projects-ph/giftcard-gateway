@@ -1,46 +1,16 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+/*
+ * English language
+ */
+$lang['text_rest_invalid_api_key'] = 'Invalid API key %s'; // %s is the REST API key
+$lang['text_rest_invalid_credentials'] = 'Invalid credentials';
+$lang['text_rest_ip_denied'] = 'IP denied';
+$lang['text_rest_ip_unauthorized'] = 'IP unauthorized';
+$lang['text_rest_unauthorized'] = 'Unauthorized';
+$lang['text_rest_ajax_only'] = 'Only AJAX requests are allowed';
+$lang['text_rest_api_key_unauthorized'] = 'This API key does not have access to the requested controller';
+$lang['text_rest_api_key_permissions'] = 'This API key does not have enough permissions';
+$lang['text_rest_api_key_time_limit'] = 'This API key has reached the time limit for this method';
+$lang['text_rest_ip_address_time_limit'] = 'This IP Address has reached the time limit for this method';
+$lang['text_rest_unknown_method'] = 'Unknown method';
+$lang['text_rest_unsupported'] = 'Unsupported protocol';

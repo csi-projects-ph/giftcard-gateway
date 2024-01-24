@@ -1,143 +1,527 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-CpD1WfPyszi23EsSfWWA0a0=
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/*
+|--------------------------------------------------------------------------
+| Base Site URL
+|--------------------------------------------------------------------------
+|
+| URL to your CodeIgniter root. Typically this will be your base URL,
+| WITH a trailing slash:
+|
+|	http://example.com/
+|
+| WARNING: You MUST set this value!
+|
+| If it is not set, then CodeIgniter will try guess the protocol and path
+| your installation, but due to security concerns the hostname will be set
+| to $_SERVER['SERVER_ADDR'] if available, or localhost otherwise.
+| The auto-detection mechanism exists only for convenience during
+| development and MUST NOT be used in production!
+|
+| If you need to allow multiple domains, remember that this file is still
+| a PHP script and you can easily do that on your own.
+|
+*/
+$config['base_url'] = '';
+$config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
+$config['base_url'] .= "://".$_SERVER['HTTP_HOST'];
+$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
+
+/*
+|--------------------------------------------------------------------------
+| Index File
+|--------------------------------------------------------------------------
+|
+| Typically this will be your index.php file, unless you've renamed it to
+| something else. If you are using mod_rewrite to remove the page set this
+| variable so that it is blank.
+|
+*/
+$config['index_page'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| URI PROTOCOL
+|--------------------------------------------------------------------------
+|
+| This item determines which server global should be used to retrieve the
+| URI string.  The default setting of 'REQUEST_URI' works for most servers.
+| If your links do not seem to work, try one of the other delicious flavors:
+|
+| 'REQUEST_URI'    Uses $_SERVER['REQUEST_URI']
+| 'QUERY_STRING'   Uses $_SERVER['QUERY_STRING']
+| 'PATH_INFO'      Uses $_SERVER['PATH_INFO']
+|
+| WARNING: If you set this to 'PATH_INFO', URIs will always be URL-decoded!
+*/
+$config['uri_protocol']	= 'REQUEST_URI';
+
+/*
+|--------------------------------------------------------------------------
+| URL suffix
+|--------------------------------------------------------------------------
+|
+| This option allows you to add a suffix to all URLs generated by CodeIgniter.
+| For more information please see the user guide:
+|
+| https://codeigniter.com/user_guide/general/urls.html
+*/
+$config['url_suffix'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Default Language
+|--------------------------------------------------------------------------
+|
+| This determines which set of language files should be used. Make sure
+| there is an available translation if you intend to use something other
+| than english.
+|
+*/
+$config['language']	= 'english';
+
+/*
+|--------------------------------------------------------------------------
+| Default Character Set
+|--------------------------------------------------------------------------
+|
+| This determines which character set is used by default in various methods
+| that require a character set to be provided.
+|
+| See http://php.net/htmlspecialchars for a list of supported charsets.
+|
+*/
+$config['charset'] = 'UTF-8';
+
+/*
+|--------------------------------------------------------------------------
+| Enable/Disable System Hooks
+|--------------------------------------------------------------------------
+|
+| If you would like to use the 'hooks' feature you must enable it by
+| setting this variable to TRUE (boolean).  See the user guide for details.
+|
+*/
+$config['enable_hooks'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Class Extension Prefix
+|--------------------------------------------------------------------------
+|
+| This item allows you to set the filename/classname prefix when extending
+| native libraries.  For more information please see the user guide:
+|
+| https://codeigniter.com/user_guide/general/core_classes.html
+| https://codeigniter.com/user_guide/general/creating_libraries.html
+|
+| $config['subclass_prefix'] = 'MY_';
+*/
+$config['subclass_prefix'] = 'REST_';
+
+/*
+|--------------------------------------------------------------------------
+| Composer auto-loading
+|--------------------------------------------------------------------------
+|
+| Enabling this setting will tell CodeIgniter to look for a Composer
+| package auto-loader script in application/vendor/autoload.php.
+|
+|	$config['composer_autoload'] = TRUE;
+|
+| Or if you have your vendor/ directory located somewhere else, you
+| can opt to set a specific path as well:
+|
+|	$config['composer_autoload'] = '/path/to/vendor/autoload.php';
+|
+| For more information about Composer, please visit http://getcomposer.org/
+|
+| Note: This will NOT disable or override the CodeIgniter-specific
+|	autoloading (application/config/autoload.php)
+*/
+$config['composer_autoload'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Allowed URL Characters
+|--------------------------------------------------------------------------
+|
+| This lets you specify which characters are permitted within your URLs.
+| When someone tries to submit a URL with disallowed characters they will
+| get a warning message.
+|
+| As a security measure you are STRONGLY encouraged to restrict URLs to
+| as few characters as possible.  By default only these are allowed: a-z 0-9~%.:_-
+|
+| Leave blank to allow all characters -- but only if you are insane.
+|
+| The configured value is actually a regular expression character group
+| and it will be executed as: ! preg_match('/^[<permitted_uri_chars>]+$/i
+|
+| DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
+|
+*/
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+
+/*
+|--------------------------------------------------------------------------
+| Enable Query Strings
+|--------------------------------------------------------------------------
+|
+| By default CodeIgniter uses search-engine friendly segment based URLs:
+| example.com/who/what/where/
+|
+| You can optionally enable standard query string based URLs:
+| example.com?who=me&what=something&where=here
+|
+| Options are: TRUE or FALSE (boolean)
+|
+| The other items let you set the query string 'words' that will
+| invoke your controllers and its functions:
+| example.com/index.php?c=controller&m=function
+|
+| Please note that some of the helpers won't work as expected when
+| this feature is enabled, since CodeIgniter is designed primarily to
+| use segment based URLs.
+|
+*/
+$config['enable_query_strings'] = FALSE;
+$config['controller_trigger'] = 'c';
+$config['function_trigger'] = 'm';
+$config['directory_trigger'] = 'd';
+
+/*
+|--------------------------------------------------------------------------
+| Allow $_GET array
+|--------------------------------------------------------------------------
+|
+| By default CodeIgniter enables access to the $_GET array.  If for some
+| reason you would like to disable it, set 'allow_get_array' to FALSE.
+|
+| WARNING: This feature is DEPRECATED and currently available only
+|          for backwards compatibility purposes!
+|
+*/
+$config['allow_get_array'] = TRUE;
+
+/*
+|--------------------------------------------------------------------------
+| Error Logging Threshold
+|--------------------------------------------------------------------------
+|
+| You can enable error logging by setting a threshold over zero. The
+| threshold determines what gets logged. Threshold options are:
+|
+|	0 = Disables logging, Error logging TURNED OFF
+|	1 = Error Messages (including PHP errors)
+|	2 = Debug Messages
+|	3 = Informational Messages
+|	4 = All Messages
+|
+| You can also pass an array with threshold levels to show individual error types
+|
+| 	array(2) = Debug Messages, without Error Messages
+|
+| For a live site you'll usually only enable Errors (1) to be logged otherwise
+| your log files will fill up very fast.
+|
+*/
+$config['log_threshold'] = 1;
+
+/*
+|--------------------------------------------------------------------------
+| Error Logging Directory Path
+|--------------------------------------------------------------------------
+|
+| Leave this BLANK unless you would like to set something other than the default
+| application/logs/ directory. Use a full server path with trailing slash.
+|
+*/
+$config['log_path'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Log File Extension
+|--------------------------------------------------------------------------
+|
+| The default filename extension for log files. The default 'php' allows for
+| protecting the log files via basic scripting, when they are to be stored
+| under a publicly accessible directory.
+|
+| Note: Leaving it blank will default to 'php'.
+|
+*/
+$config['log_file_extension'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Log File Permissions
+|--------------------------------------------------------------------------
+|
+| The file system permissions to be applied on newly created log files.
+|
+| IMPORTANT: This MUST be an integer (no quotes) and you MUST use octal
+|            integer notation (i.e. 0700, 0644, etc.)
+*/
+$config['log_file_permissions'] = 0644;
+
+/*
+|--------------------------------------------------------------------------
+| Date Format for Logs
+|--------------------------------------------------------------------------
+|
+| Each item that is logged has an associated date. You can use PHP date
+| codes to set your own date formatting
+|
+*/
+$config['log_date_format'] = 'Y-m-d H:i:s';
+
+/*
+|--------------------------------------------------------------------------
+| Error Views Directory Path
+|--------------------------------------------------------------------------
+|
+| Leave this BLANK unless you would like to set something other than the default
+| application/views/errors/ directory.  Use a full server path with trailing slash.
+|
+*/
+$config['error_views_path'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Cache Directory Path
+|--------------------------------------------------------------------------
+|
+| Leave this BLANK unless you would like to set something other than the default
+| application/cache/ directory.  Use a full server path with trailing slash.
+|
+*/
+$config['cache_path'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Cache Include Query String
+|--------------------------------------------------------------------------
+|
+| Whether to take the URL query string into consideration when generating
+| output cache files. Valid options are:
+|
+|	FALSE      = Disabled
+|	TRUE       = Enabled, take all query parameters into account.
+|	             Please be aware that this may result in numerous cache
+|	             files generated for the same page over and over again.
+|	array('q') = Enabled, but only take into account the specified list
+|	             of query parameters.
+|
+*/
+$config['cache_query_string'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Encryption Key
+|--------------------------------------------------------------------------
+|
+| If you use the Encryption class, you must set an encryption key.
+| See the user guide for more info.
+|
+| https://codeigniter.com/user_guide/libraries/encryption.html
+|
+*/
+$config['encryption_key'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Session Variables
+|--------------------------------------------------------------------------
+|
+| 'sess_driver'
+|
+|	The storage driver to use: files, database, redis, memcached
+|
+| 'sess_cookie_name'
+|
+|	The session cookie name, must contain only [0-9a-z_-] characters
+|
+| 'sess_expiration'
+|
+|	The number of SECONDS you want the session to last.
+|	Setting to 0 (zero) means expire when the browser is closed.
+|
+| 'sess_save_path'
+|
+|	The location to save sessions to, driver dependent.
+|
+|	For the 'files' driver, it's a path to a writable directory.
+|	WARNING: Only absolute paths are supported!
+|
+|	For the 'database' driver, it's a table name.
+|	Please read up the manual for the format with other session drivers.
+|
+|	IMPORTANT: You are REQUIRED to set a valid save path!
+|
+| 'sess_match_ip'
+|
+|	Whether to match the user's IP address when reading the session data.
+|
+|	WARNING: If you're using the database driver, don't forget to update
+|	         your session table's PRIMARY KEY when changing this setting.
+|
+| 'sess_time_to_update'
+|
+|	How many seconds between CI regenerating the session ID.
+|
+| 'sess_regenerate_destroy'
+|
+|	Whether to destroy session data associated with the old session ID
+|	when auto-regenerating the session ID. When set to FALSE, the data
+|	will be later deleted by the garbage collector.
+|
+| Other session cookie settings are shared with the rest of the application,
+| except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
+|
+*/
+$config['sess_driver'] = 'files';
+$config['sess_cookie_name'] = 'ci_session';
+$config['sess_expiration'] = 7200;
+$config['sess_save_path'] = FCPATH.'ci_sessions';
+$config['sess_match_ip'] = TRUE;
+$config['sess_time_to_update'] = 300;
+$config['sess_regenerate_destroy'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Cookie Related Variables
+|--------------------------------------------------------------------------
+|
+| 'cookie_prefix'   = Set a cookie name prefix if you need to avoid collisions
+| 'cookie_domain'   = Set to .your-domain.com for site-wide cookies
+| 'cookie_path'     = Typically will be a forward slash
+| 'cookie_secure'   = Cookie will only be set if a secure HTTPS connection exists.
+| 'cookie_httponly' = Cookie will only be accessible via HTTP(S) (no javascript)
+|
+| Note: These settings (with the exception of 'cookie_prefix' and
+|       'cookie_httponly') will also affect sessions.
+|
+*/
+$config['cookie_prefix']	= '';
+$config['cookie_domain']	= '';
+$config['cookie_path']		= '/';
+$config['cookie_secure']	= FALSE;
+$config['cookie_httponly'] 	= FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Standardize newlines
+|--------------------------------------------------------------------------
+|
+| Determines whether to standardize newline characters in input data,
+| meaning to replace \r\n, \r, \n occurrences with the PHP_EOL value.
+|
+| WARNING: This feature is DEPRECATED and currently available only
+|          for backwards compatibility purposes!
+|
+*/
+$config['standardize_newlines'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Global XSS Filtering
+|--------------------------------------------------------------------------
+|
+| Determines whether the XSS filter is always active when GET, POST or
+| COOKIE data is encountered
+|
+| WARNING: This feature is DEPRECATED and currently available only
+|          for backwards compatibility purposes!
+|
+*/
+$config['global_xss_filtering'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Cross Site Request Forgery
+|--------------------------------------------------------------------------
+| Enables a CSRF cookie token to be set. When set to TRUE, token will be
+| checked on a submitted form. If you are accepting user data, it is strongly
+| recommended CSRF protection be enabled.
+|
+| 'csrf_token_name' = The token name
+| 'csrf_cookie_name' = The cookie name
+| 'csrf_expire' = The number in seconds the token should expire.
+| 'csrf_regenerate' = Regenerate token on every submission
+| 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
+*/
+$config['csrf_protection'] = FALSE;
+$config['csrf_token_name'] = 'csrf_test_name';
+$config['csrf_cookie_name'] = 'csrf_cookie_name';
+$config['csrf_expire'] = 7200;
+$config['csrf_regenerate'] = TRUE;
+$config['csrf_exclude_uris'] = array();
+
+/*
+|--------------------------------------------------------------------------
+| Output Compression
+|--------------------------------------------------------------------------
+|
+| Enables Gzip output compression for faster page loads.  When enabled,
+| the output class will test whether your server supports Gzip.
+| Even if it does, however, not all browsers support compression
+| so enable only if you are reasonably sure your visitors can handle it.
+|
+| Only used if zlib.output_compression is turned off in your php.ini.
+| Please do not use it together with httpd-level output compression.
+|
+| VERY IMPORTANT:  If you are getting a blank page when compression is enabled it
+| means you are prematurely outputting something to your browser. It could
+| even be a line of whitespace at the end of one of your scripts.  For
+| compression to work, nothing can be sent before the output buffer is called
+| by the output class.  Do not 'echo' any values with compression enabled.
+|
+*/
+$config['compress_output'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Master Time Reference
+|--------------------------------------------------------------------------
+|
+| Options are 'local' or any PHP supported timezone. This preference tells
+| the system whether to use your server's local time as the master 'now'
+| reference, or convert it to the configured one timezone. See the 'date
+| helper' page of the user guide for information regarding date handling.
+|
+*/
+$config['time_reference'] = 'local';
+
+/*
+|--------------------------------------------------------------------------
+| Rewrite PHP Short Tags
+|--------------------------------------------------------------------------
+|
+| If your PHP installation does not have short tag support enabled CI
+| can rewrite the tags on-the-fly, enabling you to utilize that syntax
+| in your view files.  Options are TRUE or FALSE (boolean)
+|
+| Note: You need to have eval() enabled for this to work.
+|
+*/
+$config['rewrite_short_tags'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
+| Reverse Proxy IPs
+|--------------------------------------------------------------------------
+|
+| If your server is behind a reverse proxy, you must whitelist the proxy
+| IP addresses from which CodeIgniter should trust headers such as
+| HTTP_X_FORWARDED_FOR and HTTP_CLIENT_IP in order to properly identify
+| the visitor's IP address.
+|
+| You can use both an array or a comma-separated list of proxy addresses,
+| as well as specifying whole subnets. Here are a few examples:
+|
+| Comma-separated:	'10.0.1.200,192.168.5.0/24'
+| Array:		array('10.0.1.200', '192.168.5.0/24')
+*/
+$config['proxy_ips'] = '';

@@ -1,29 +1,6 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+
+/* load the MX_Loader class */
+require APPPATH."third_party/MX/Loader.php";
+
+class MY_Loader extends MX_Loader {}

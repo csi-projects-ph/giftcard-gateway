@@ -1,43 +1,64 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+?><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>404 Page Not Found</title>
+<style type="text/css">
+
+::selection { background-color: #E13300; color: white; }
+::-moz-selection { background-color: #E13300; color: white; }
+
+body {
+	background-color: #fff;
+	margin: 40px;
+	font: 13px/20px normal Helvetica, Arial, sans-serif;
+	color: #4F5155;
+}
+
+a {
+	color: #003399;
+	background-color: transparent;
+	font-weight: normal;
+}
+
+h1 {
+	color: #444;
+	background-color: transparent;
+	border-bottom: 1px solid #D0D0D0;
+	font-size: 19px;
+	font-weight: normal;
+	margin: 0 0 14px 0;
+	padding: 14px 15px 10px 15px;
+}
+
+code {
+	font-family: Consolas, Monaco, Courier New, Courier, monospace;
+	font-size: 12px;
+	background-color: #f9f9f9;
+	border: 1px solid #D0D0D0;
+	color: #002166;
+	display: block;
+	margin: 14px 0 14px 0;
+	padding: 12px 10px 12px 10px;
+}
+
+#container {
+	margin: 10px;
+	border: 1px solid #D0D0D0;
+	box-shadow: 0 0 8px #D0D0D0;
+}
+
+p {
+	margin: 12px 15px 12px 15px;
+}
+</style>
+</head>
+<body>
+	<div id="container">
+		<h1><?php echo $heading; ?></h1>
+		<?php echo $message; ?>
+	</div>
+</body>
+</html>

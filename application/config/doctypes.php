@@ -1,68 +1,24 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-pkS=
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+$_doctypes = array(
+	'xhtml11' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
+	'xhtml1-strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+	'xhtml1-trans' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+	'xhtml1-frame' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
+	'xhtml-basic11' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
+	'html5' => '<!DOCTYPE html>',
+	'html4-strict' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
+	'html4-trans' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
+	'html4-frame' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
+	'mathml1' => '<!DOCTYPE math SYSTEM "http://www.w3.org/Math/DTD/mathml1/mathml.dtd">',
+	'mathml2' => '<!DOCTYPE math PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">',
+	'svg10' => '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">',
+	'svg11' => '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
+	'svg11-basic' => '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Basic//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd">',
+	'svg11-tiny' => '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">',
+	'xhtml-math-svg-xh' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">',
+	'xhtml-math-svg-sh' => '<!DOCTYPE svg:svg PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">',
+	'xhtml-rdfa-1' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">',
+	'xhtml-rdfa-2' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.1//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-2.dtd">'
+);
