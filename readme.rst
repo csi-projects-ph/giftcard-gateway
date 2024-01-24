@@ -4,7 +4,7 @@ Headers
 Signature: 3739237d6d5c9120862241d37fda62a3849d120d7b2d2a815fd20c07c9d7d0b0
 
 authors: Bryan Iban, Dhante De Leon, Kim Alcoy
-version: 1.2.0
+version: 2.5.0
 copyright (c) 2023, Channel Solutions Inc.
 
 *******************
@@ -35,7 +35,12 @@ Inner Response Code/Message used to response in GC HOST
 
 2.4.0
 Terminal ID handling for New GC Host
-	
+
+2.5.0
+Terminal ID handling format for New GC Host	
+Updated file
+	- csi_helper.php
+	- Settlement.php
 
 *******************
 Server Requirements
