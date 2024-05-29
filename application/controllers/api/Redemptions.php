@@ -1,597 +1,780 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-require(APPPATH.'/libraries/REST_Controller.php');
-use Restserver\Libraries\REST_Controller;
-
-class Redemptions extends REST_Controller {
-
-    public function __construct() {
-      parent::__construct();
-        $this->load->model('db_model');
-        $this->load->library('Authorization_Token');
-        $this->lang->load('response');
-        // $this->load->helper('cookie');
-    }
-
-    public function index_post($payload)
-    {
-        $date           = new DateTime();
-        $input          = json_decode(file_get_contents('php://input'), true);
-        $headers        = $this->input->request_headers(); 
-        $validateToken  = validateTermID($input, $headers);
-        $txn_id         = gen_txn_id();
-        $pl_url         = $this->db_model->selectQuery('mt_sys_properties',array('FLAG' => 1, 'PROPERTY' => 'PINELABS_APISERVER'));
-        $pl_endpoints   = $this->db_model->selectQuery('mt_sys_properties',array('FLAG' => 1),'PROPERTY, VALUE');
-
-        if ($validateToken) {
-            $http = REST_Controller::HTTP_OK;
-
-            if (!is_array($input)) {
-                $code = '90405';
-                $msg = 'Method Not Allowed';
-                $http = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
-            } elseif ( ! in_array($payload, array('redeem','void','reverse','rev_void'))) {
-                $code = '90400';
-                $msg = 'Bad Request';
-                $http = REST_Controller::HTTP_BAD_REQUEST; 
-            } else {
-                foreach ($input as $key => $value) { $_POST[$key] = $value; }
-
-                $this->config->load('form_validation_rules', TRUE);
-                $this->form_validation->set_rules($this->config->item($payload, 'form_validation_rules'));
-                $this->form_validation->set_error_delimiters('(',')');
-
-                if($this->form_validation->run()) {
-                    $busRefNum = $input['Stan'].$input['InvoiceNumber'];
-                    $request_header = json_encode(array("Content-Type:application/json","DateAtClient:".date('Y-m-d'),"TransactionId:".$txn_id,"Authorization: Bearer ".$validateToken));
-                    $transactionMode= getTranMode(@$input['PosCode']);
-
-                    switch ($payload) {
-                        case 'redeem':
-                            // $url     = PINELABS_URL.'/gc/transactions';
-                            foreach ($pl_endpoints as $key => $field) { if($pl_endpoints[$key]->PROPERTY == 'PL_redemption') { $url = $pl_url[0]->VALUE.$pl_endpoints[$key]->VALUE; } }
-
-                            $post_array = array(
-                                    "transactionTypeId" => "302",
-                                    "inputType" => "1",
-                                    "invoiceNumber" => $input['InvoiceNumber'],
-                                    "invoiceDate" => date('Y-m-d'),
-                                    "invoiceAmount" => (isDE4Format($input['Amount']) ? iso8583Amount($input['Amount']) : $input['Amount']),
-                                    "BusinessReferenceNumber" => $busRefNum,
-                                    "IdempotencyKey" => "0200-".$input['ProcessingCode']."-".date('Ymd')."-".$input['Stan']."-".$input['MerchantID']."-".$input['TerminalID'],
-                                    "cards" => [array(
-                                        "CardNumber" => $input['Track2Data'],
-                                        "CardPin" => $input['CardPin'],
-                                        "Amount" => (isDE4Format($input['Amount']) ? iso8583Amount($input['Amount']) : $input['Amount'])
-                                    )],
-                                    "NetworkTransactionInfo" => array(
-                                        "mid" => $input['MerchantID'],
-                                        "tid" => $input['TerminalID'],
-                                        "TransactionMode" => $transactionMode,
-                                    )
-                                );
-                            $errorWhereClause = array("IdempotencyKey"=>$post_array['IdempotencyKey'],"InvoiceNumber"=>$input['InvoiceNumber']);
-
-                            @$this->db_insert('redeem','in',$input,$post_array,$request_header);
-                            $log_msg = date('Y-m-d H:i:s').' >> REDEMPTION >> request_message >> '.json_encode($post_array);
-                            generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                            
-                            //check IdempotencyKey uniqueness
-                            $record = $this->db_model->selectQuery('TT_TRANSACTIONS_GATEWAY',array('IDEMPOTENCYKEY' => $post_array['IdempotencyKey'], 'MSGTYPE' => '0210'));
-                            if ($record) {
-                                $response = array("ResponseCode"=>"90403","ResponseMessage"=>"Invalid Idempotency Key.");
-                                $this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                            }
-                            if ($input['ProcessingCode'] <> '069000') {
-                                $response = array("ResponseCode"=>"90401","ResponseMessage"=>"Invalid Processing Code.");
-                                $this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                            }
-                            if ($this->db_model->selectQuery('TT_TRANSACTIONS_GATEWAY',array('INVOICENUM' => $input['InvoiceNumber'], 'MSGTYPE' => '0210'))) {
-                                $response = array("ResponseCode"=>"90403","ResponseMessage"=>"Invalid Invoice Number.");
-                                $this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                            } //added 20231107
-
-                            $result = $this->run_curl($url, $post_array, 'post', 'json', $txn_id, $validateToken);
-
-                           /// $this->log_trail('redeem',json_encode($input),($result?$result:NULL),($result?json_decode($result)->ResponseMessage:NULL));
-
-                            if (!$result) { 
-                                $response = array(
-                                            "ResponseCode" => '99204',
-                                            "ResponseMessage" => 'No Response from PL'
-                                        );
-                                $log_msg = date('Y-m-d H:i:s').' >> REDEMPTION >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response([], REST_Controller::HTTP_NO_CONTENT);
-                            // elseif (json_decode($result)->ResponseCode <> 0) { $this->response(json_decode($result, TRUE), $http); } 
-                            } elseif (empty(json_decode($result)->ResponseMessage)) {
-                                $response = array("ResponseCode"=>'90400',"ResponseMessage"=>'Bad Request');
-                                $log_msg = date('Y-m-d H:i:s').' >> REDEMPTION >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST); 
-                            } elseif (json_decode($result)->ResponseCode <> 0 || is_null(json_decode($result)->ResponseCode)) { 
-                                $response = json_decode($result,1);
-                                $code = (empty($response['Cards']) ? $response['ResponseCode'] : $response['Cards'][0]['ResponseCode']);
-                                $msg = (empty($response['Cards']) ? $response['ResponseMessage'] : $response['Cards'][0]['ResponseMessage']);
-                                $message = array("ResponseCode"=>$code,"ResponseMessage"=>$msg);
-                                $log_msg = date('Y-m-d H:i:s').' >> REDEMPTION >> response_message >>  '.json_encode($message);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('redeem','out',$response,($errorWhereClause+$message),json_encode($headers));
-
-                                $this->response($message, REST_Controller::HTTP_BAD_REQUEST); 
-                            } else {
-                                $response = json_decode($result);
-                                $return_array = array(
-                                                "02^PAN" => $response->Cards[0]->CardNumber,
-                                                "03^ProcessingCode" => $input['ProcessingCode'],
-                                                "04^TransactionAmount" => $response->Cards[0]->TransactionAmount,
-                                                "11^Stan" => $input['Stan'],
-                                                "12^Time" => date('H:iA', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "13^Date" => date('Y-m-d', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "24^NII" => $input['NII'],
-                                                "37^ReferenceNumber" => $response->BusinessReferenceNumber ? $response->BusinessReferenceNumber : str_pad('',12,'0'),
-                                                "38^ApprovalCode" => $response->Cards[0]->ApprovalCode.'-'.$response->CurrentBatchNumber,
-                                                "39^ResponseCode" => $response->Cards[0]->ResponseCode,
-                                                "41^TerminalID" => $input['TerminalID'],
-                                                "42^MerchantID" => $input['MerchantID'],
-                                                "62^InvoiceNumber" => $input['InvoiceNumber'],
-                                                "63^Balance" => $response->Cards[0]->Balance
-                                            );
-
-                                $log_msg = date('Y-m-d H:i:s').' >> REDEMPTION >> response_message >>  '.json_encode($return_array);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('redeem','out',json_decode($result,1),$return_array,json_encode($headers));
-                                $this->response($return_array, $http);
-                            }
-                            break;
-                        case 'void':
-                            // $url     = PINELABS_URL.'/gc/transactions/cancel';
-                            foreach ($pl_endpoints as $key => $field) { if($pl_endpoints[$key]->PROPERTY == 'PL_voidRed') { $url = $pl_url[0]->VALUE.$pl_endpoints[$key]->VALUE; } }
-
-                            $records = $this->db_model->selectQuery('tt_transactions_gateway',array('TRANSACTIONTYPEID' => '302', 'INVOICENUM' => $input['InvoiceNumber'], 'RESPONSECODE' => '0', 'CARDNUMBER' => $input['PAN'], 'MIDTID' => $input['MerchantID'].'-'.$input['TerminalID']));
-                            $errorWhereClause = array("ProcessingCode"=>$input['ProcessingCode'],"InvoiceNumber"=>$input['InvoiceNumber']);
-                            $post_array = array(
-                                    "transactionTypeId" => "312",
-                                    "TransactionModeID" => 0,
-                                    "inputType" => "1",
-                                    "numberOfCards" => 1,
-                                    "BusinessReferenceNumber" => $input['ReferenceNumber'],
-                                    "cards" => [array(
-                                        "CardNumber" => @$records[0]->CARDNUMBER,
-                                        "OriginalRequest" => array(
-                                            "OriginalBatchNumber" => @$records[0]->BATCHNUMBER,
-                                            "OriginalTransactionId" => @$records[0]->TRANSACTIONID,
-                                            "OriginalApprovalCode" => @$records[0]->APPROVAL_CODE,
-                                            "OriginalAmount" => @$records[0]->AMOUNT,
-                                            "OriginalInvoiceNumber" => @$records[0]->INVOICENUM
-                                        ),
-                                        "Reason" => "incorrectRedemption"
-                                    )],
-                                    "NetworkTransactionInfo" => array(
-                                        "mid" => $input['MerchantID'],
-                                        "tid" => $input['TerminalID'],
-                                        "TransactionMode" => $transactionMode,
-                                    )
-                                );
-
-                            $log_msg = date('Y-m-d H:i:s').' >> VOID >> request_message >>  '.json_encode($post_array);
-                            generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                            @$this->db_insert('void','in',$input,$post_array,$request_header);
-
-                            if (!$records) {
-                                $response = array("ResponseCode"=>"99402","ResponseMessage"=>"Transaction Not Found");
-                                $log_msg = date('Y-m-d H:i:s').' >> VOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('void','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_NOT_FOUND);
-                            }
-                            if ($input['ProcessingCode'] <> '020000') {
-                                $response = array("ResponseCode"=>"90401","ResponseMessage"=>"Invalid Processing Code.");
-                                $log_msg = date('Y-m-d H:i:s').' >> VOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('void','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                            }
-
-                            $result = $this->run_curl($url, $post_array, 'post', 'json', $txn_id, $validateToken);
-
-                            //$this->log_trail('void',json_encode($input),($result?$result:NULL),($result?json_decode($result)->ResponseMessage:NULL));
-
-                            if (!$result) { 
-                                $response = array(
-                                            "ResponseCode" => '99204',
-                                            "ResponseMessage" => 'No Response from PL'
-                                        );
-                                $log_msg = date('Y-m-d H:i:s').' >> VOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('void','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response([], REST_Controller::HTTP_NO_CONTENT);
-                            // elseif (json_decode($result)->ResponseCode <> 0) { $this->response(json_decode($result, TRUE), $http); } 
-                            } elseif (empty(json_decode($result)->ResponseMessage)) {
-                                $response = array("ResponseCode"=>'90400',"ResponseMessage"=>'Bad Request');
-                                $log_msg = date('Y-m-d H:i:s').' >> VOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST); 
-                            } elseif (json_decode($result)->ResponseCode <> 0 || is_null(json_decode($result)->ResponseCode)) { 
-                                $response = json_decode($result,1);
-                                $code = (empty($response['Cards']) ? $response['ResponseCode'] : $response['Cards'][0]['ResponseCode']);
-                                $msg = (empty($response['Cards']) ? $response['ResponseMessage'] : $response['Cards'][0]['ResponseMessage']);
-                                $message = array("ResponseCode"=>$code,"ResponseMessage"=>$msg);
-                                $log_msg = date('Y-m-d H:i:s').' >> VOID >> response_message >>  '.json_encode($message);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('void','out',$response,($errorWhereClause+$message),json_encode($headers));
-                               
-                                $this->response($message, REST_Controller::HTTP_BAD_REQUEST); 
-                            } else {
-                                $response = json_decode($result);
-                                $return_array = array(
-                                                "02^PAN" => $response->Cards[0]->CardNumber,
-                                                "03^ProcessingCode" => $input['ProcessingCode'],
-                                                "04^TransactionAmount" => $response->Cards[0]->TransactionAmount,
-                                                "11^Stan" => $input['Stan'],
-                                                "12^Time" => date('H:iA', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "13^Date" => date('Y-m-d', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "24^NII" => $input['NII'],
-                                                "37^ReferenceNumber" => $response->BusinessReferenceNumber ? $response->BusinessReferenceNumber : str_pad('',12,'0'),
-                                                "38^ApprovalCode" => $response->Cards[0]->ApprovalCode.'-'.$response->CurrentBatchNumber,
-                                                "39^ResponseCode" => $response->Cards[0]->ResponseCode,
-                                                "41^TerminalID" => $input['TerminalID'],
-                                                "42^MerchantID" => $input['MerchantID'],
-                                                "63^Balance" => $response->Cards[0]->Balance
-                                            );
-
-                                $log_msg = date('Y-m-d H:i:s').' >> VOID >> response_message >>  '.json_encode($return_array);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('void','out',json_decode($result,1),$return_array,json_encode($headers));
-                                $this->response($return_array, $http);
-                            }
-                            break;
-                        case 'reverse':
-                            // $url     = PINELABS_URL.'/gc/transactions/reverse';
-                            foreach ($pl_endpoints as $key => $field) { if($pl_endpoints[$key]->PROPERTY == 'PL_reversal') { $url = $pl_url[0]->VALUE.$pl_endpoints[$key]->VALUE; } }
-
-                            $post_array = array(
-                                    "transactionTypeId" => "302",
-                                    "inputType" => "1",
-                                    "invoiceNumber" => $input['InvoiceNumber'],
-                                    "invoiceDate" => date('Y-m-d'),
-                                    "invoiceAmount" => (isDE4Format($input['Amount']) ? iso8583Amount($input['Amount']) : $input['Amount']),
-                                    "BusinessReferenceNumber" => $busRefNum,
-                                    "IdempotencyKey" => "0400-".$input['ProcessingCode']."-".date('Ymd')."-".$input['Stan']."-".$input['MerchantID']."-".$input['TerminalID'],
-                                    "cards" => [array(
-                                        "CardNumber" => $input['Track2Data'],
-                                        //"CardPin" => $input['CardPin'], removed 08/09/2023 by Bryan as per sir Alvin and Klint
-                                        "Amount" => (isDE4Format($input['Amount']) ? iso8583Amount($input['Amount']) : $input['Amount'])
-                                    )],
-                                    "NetworkTransactionInfo" => array(
-                                        "mid" => $input['MerchantID'],
-                                        "tid" => $input['TerminalID'],
-                                        "TransactionMode" => $transactionMode,
-                                    )
-                                );
-                            $errorWhereClause = array("IdempotencyKey"=>$post_array['IdempotencyKey'],"InvoiceNumber"=>$input['InvoiceNumber']);
-
-                            $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> request_message >>  '.json_encode($post_array);
-                            generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                            @$this->db_insert('reverse','in',$input,$post_array,$request_header);
-                            
-                            $record = $this->db_model->selectQuery('tt_transactions_gateway',array('CARDNUMBER' => $input['Track2Data'], 'INVOICENUM' => $input['InvoiceNumber'], 'MSGTYPE' => '0210'));
-                            if (!$record) {
-                                $response = array("ResponseCode"=>"99402","ResponseMessage"=>"Transaction Not Found");
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('reverse','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_NOT_FOUND);
-                            }
-                            if ($input['ProcessingCode'] <> '069000') {
-                                $response = array("ResponseCode"=>"90401","ResponseMessage"=>"Invalid Processing Code.");
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('reverse','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                            }
-
-                            $txn_id = $record[0]->TRANSACTIONID;
-                            $result = $this->run_curl($url, $post_array, 'post', 'json', $txn_id, $validateToken);
-
-                            //$this->log_trail('reverse',json_encode($input),($result?$result:NULL),($result?json_decode($result)->ResponseMessage:NULL));
-
-                            if (!$result) { 
-                                $response = array(
-                                            "ResponseCode" => '99204',
-                                            "ResponseMessage" => 'No Response from PL'
-                                        );
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('reverse','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response([], REST_Controller::HTTP_NO_CONTENT);
-                            // elseif (json_decode($result)->ResponseCode <> 0) { $this->response(json_decode($result, TRUE), $http); } 
-                            } elseif (empty(json_decode($result)->ResponseMessage)) {
-                                $response = array("ResponseCode"=>'90400',"ResponseMessage"=>'Bad Request');
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST); 
-                            } elseif (json_decode($result)->ResponseCode <> 0 || strpos(json_decode($result)->ResponseMessage, 'Cannot') !== false || strpos(json_decode($result)->ResponseMessage, 'Failed') !== false || (!empty(json_decode($result)->Cards) && strpos(json_decode($result)->Cards[0]->ResponseMessage, 'Cannot') !== false) || is_null(json_decode($result)->ResponseCode)) { 
-                                $response = json_decode($result,1);
-                                $code = (empty($response['Cards']) ? $response['ResponseCode'] : $response['Cards'][0]['ResponseCode']);
-                                $msg = (empty($response['Cards']) ? $response['ResponseMessage'] : $response['Cards'][0]['ResponseMessage']);
-                                $message = array("ResponseCode"=>$code,"ResponseMessage"=>$msg);
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> response_message >>  '.json_encode($message);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('reverse','out',$response,($errorWhereClause+$message),json_encode($headers));
-                                
-                                $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
-                            } else {
-                                $response = json_decode($result);
-                                $return_array = array(
-                                                "02^PAN" => $response->Cards[0]->CardNumber,
-                                                "03^ProcessingCode" => $input['ProcessingCode'],
-                                                "04^TransactionAmount" => $response->Cards[0]->TransactionAmount,
-                                                "11^Stan" => $input['Stan'],
-                                                "12^Time" => date('H:iA', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "13^Date" => date('Y-m-d', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "24^NII" => $input['NII'],
-                                                "37^ReferenceNumber" => $response->BusinessReferenceNumber ? $response->BusinessReferenceNumber : str_pad('',12,'0'), //$input['Stan']."-".$response->TransactionId."-".$input['ProcessingCode'],
-                                                "38^ApprovalCode" => $response->Cards[0]->ApprovalCode.'-'.$response->CurrentBatchNumber,
-                                                "39^ResponseCode" => $response->Cards[0]->ResponseCode,
-                                                "41^TerminalID" => $input['TerminalID'],
-                                                "42^MerchantID" => $input['MerchantID'],
-                                                "63^Balance" => $response->Cards[0]->Balance
-                                            );
-
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSAL >> response_message >>  '.json_encode($return_array);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('reverse','out',json_decode($result,1),($return_array+array('InvoiceNumber'=>$records[0]->INVOICENUM)),json_encode($headers));
-                                $this->response($return_array, $http);
-                            }
-                            break;
-                        case 'rev_void':
-                            // $url     = PINELABS_URL.'/gc/transactions/reverse';
-                            foreach ($pl_endpoints as $key => $field) { if($pl_endpoints[$key]->PROPERTY == 'PL_voidRev') { $url = $pl_url[0]->VALUE.$pl_endpoints[$key]->VALUE; } }
-
-                            $records = $this->db_model->selectQuery('TT_TRANSACTIONS_GATEWAY',array('TRANSACTIONTYPEID' => '312', 'INVOICENUM' => $input['InvoiceNumber'], 'RESPONSECODE' => '0', 'CARDNUMBER' => $input['PAN'], 'MIDTID' => $input['MerchantID'].'-'.$input['TerminalID']));
-                            $errorWhereClause = array("ProcessingCode"=>$input['ProcessingCode'],"InvoiceNumber"=>$input['InvoiceNumber']);
-                            $post_array = array(
-                                    "transactionTypeId" => "312",
-                                    "TransactionModeID" => 0,
-                                    "inputType" => "1",
-                                    "numberOfCards" => 1,
-                                    "BusinessReferenceNumber" => $busRefNum,
-                                    "cards" => [array(
-                                        "CardNumber" => @$records[0]->CARDNUMBER,
-                                        "OriginalRequest" => array(
-                                            "OriginalBatchNumber" => @$records[0]->BATCHNUMBER,
-                                            "OriginalTransactionId" => @$records[0]->TRANSACTIONID,
-                                            "OriginalApprovalCode" => @$records[0]->APPROVAL_CODE,
-                                            "OriginalAmount" => @$records[0]->AMOUNT,
-                                            "OriginalInvoiceNumber" => @$records[0]->INVOICENUM
-                                        ),
-                                        "Reason" => "incorrectRedemption",
-                                        "NetworkTransactionInfo" => array(
-                                            "mid" => $input['MerchantID'],
-                                            "tid" => $input['TerminalID'],
-                                            "TransactionMode" => $transactionMode
-                                        )
-                                    )]
-                                );
-
-                            $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> request_message >>  '.json_encode($post_array);
-                            generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                            @$this->db_insert('rev_void','in',$input,$post_array,$request_header);
-
-                            if (!$records) {
-                                $response = array("ResponseCode"=>"99402","ResponseMessage"=>"Transaction Not Found");
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('rev_void','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_NOT_FOUND);
-                            }
-                            if ($input['ProcessingCode'] <> '020000') {
-                                $response = array("ResponseCode"=>"90401","ResponseMessage"=>"Invalid Processing Code.");
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('rev_void','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                            }
-                            
-                            $txn_id = $records[0]->TRANSACTIONID;
-                            $result = $this->run_curl($url, $post_array, 'post', 'json', $txn_id, $validateToken);
-
-                            //$this->log_trail('reverse_void',json_encode($input),($result?$result:NULL),($result?json_decode($result)->ResponseMessage:NULL));
-
-                            if (!$result) { 
-                                $response = array(
-                                            "ResponseCode" => '99204',
-                                            "ResponseMessage" => 'No Response from PL'
-                                        );
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                $this->db_insert('rev_void','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response([], REST_Controller::HTTP_NO_CONTENT);
-                            // elseif (json_decode($result)->ResponseCode <> 0) { $this->response(json_decode($result, TRUE), $http); } 
-                            } elseif (empty(json_decode($result)->ResponseMessage)) {
-                                $response = array("ResponseCode"=>'90400',"ResponseMessage"=>'Bad Request');
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> response_message >>  '.json_encode($response);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('redeem','out',$response,($errorWhereClause+$response),json_encode($headers));
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST); 
-                            } elseif (json_decode($result)->ResponseCode <> 0 || strpos(json_decode($result)->ResponseMessage, 'Cannot') !== false || strpos(json_decode($result)->ResponseMessage, 'Failed') !== false || (!empty(json_decode($result)->Cards) && strpos(json_decode($result)->Cards[0]->ResponseMessage, 'Cannot') !== false) || is_null(json_decode($result)->ResponseCode)) { 
-                                $response = json_decode($result,1);
-                                $code = (empty($response['Cards']) ? $response['ResponseCode'] : $response['Cards'][0]['ResponseCode']);
-                                $msg = (empty($response['Cards']) ? $response['ResponseMessage'] : $response['Cards'][0]['ResponseMessage']);
-                                $message = array("ResponseCode"=>$code,"ResponseMessage"=>$msg);
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> response_message >>  '.json_encode($message);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('rev_void','out',$response,($errorWhereClause+$message),json_encode($headers));
-                               
-                                $this->response($message, REST_Controller::HTTP_BAD_REQUEST); 
-                            } else {
-                                $response = json_decode($result);
-                                $return_array = array(
-                                                "02^PAN" => $response->Cards[0]->CardNumber,
-                                                "03^ProcessingCode" => $input['ProcessingCode'],
-                                                "04^TransactionAmount" => $response->Cards[0]->TransactionAmount,
-                                                "11^Stan" => $input['Stan'],
-                                                "12^Time" => date('H:iA', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "13^Date" => date('Y-m-d', strtotime($response->Cards[0]->TransactionDateTime)),
-                                                "24^NII" => $input['NII'],
-                                                "37^ReferenceNumber" => $response->BusinessReferenceNumber ? $response->BusinessReferenceNumber : str_pad('',12,'0'), //$input['Stan']."-".$response->TransactionId."-".$input['ProcessingCode'];
-                                                "38^ApprovalCode" => $response->Cards[0]->ApprovalCode.'-'.$response->CurrentBatchNumber,
-                                                "39^ResponseCode" => $response->Cards[0]->ResponseCode,
-                                                "41^TerminalID" => $input['TerminalID'],
-                                                "42^MerchantID" => $input['MerchantID'],
-                                                "63^Balance" => $response->Cards[0]->Balance
-                                            );
-
-                                $log_msg = date('Y-m-d H:i:s').' >> REVERSEVOID >> response_message >>  '.json_encode($return_array);
-                                generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-                                @$this->db_insert('rev_void','out',json_decode($result,1),($return_array+array('InvoiceNumber'=>$records[0]->INVOICENUM)),json_encode($headers));
-                                $this->response($return_array, $http);
-                            }
-                            break;
-                    }
-                } else {
-                    $code = '90400';
-                    $msg = str_replace("\n", ', ',trim(validation_errors()));
-                    $http = REST_Controller::HTTP_BAD_REQUEST; 
-                }
-            }
-            
-            //$this->log_trail($payload, file_get_contents('php://input'), (empty($result)?NULL:$result), $msg);
-            $log_msg = date('Y-m-d H:i:s').' >> '.$payload.' >> response_message >>  '.json_encode(array("ResponseCode" => $code, "ResponseMessage" => $msg));
-            generate_log(FCPATH.'application/logs/logs_gc_gateway_'.date('Ymd').'.txt',$log_msg);
-            $this->response(array("ResponseCode" => $code, "ResponseMessage" => $msg), $http);
-        }
-    }
-
-    private function log_trail($payload, $input, $response, $msg)
-    {
-        $log_details = array(
-           'IP_ADDRESS'         => $_SERVER['REMOTE_ADDR'],
-           'USER_AGENT'         => $_SERVER['HTTP_USER_AGENT'],
-           'MODULE'             => $payload,
-           'REQUEST'            => $input,
-           'RESPONSE'           => $response, 
-           'MESSAGE'            => $msg
-          );
-        @$this->db->insert('MT_API_LOGS',$log_details);
-    }
-
-    private function db_insert($payload, $type, $input1, $input2 = '', $headers = FALSE)
-    {
-        $date = new DateTime();
-        if ($input1 && is_array($input1) && in_array($payload, array('redeem','void','reverse','rev_void'))) {
-            switch ($payload) {
-                case 'redeem':
-                case 'reverse':
-                    if ($type == 'in') {
-                        $data = array(
-                           'TRANSACTIONTYPEID'  => '302',
-                           'TRANDATETIME'       => $date->format('Y-m-d H:i:s'),
-                           'IDEMPOTENCYKEY'     => ($input2 ? $input2['IdempotencyKey'] : NULL),
-                           'STAN'               => $input1['Stan'],
-                           'MIDTID'             => $input1['MerchantID'].'-'.$input1['TerminalID'],
-                           'CARDNUMBER'         => $input1['Track2Data'],
-                           'AMOUNT'             => (string)$input1['Amount'], 
-                           'REQUESTCODE'        => ($payload=='redeem'?'0200':'0400'),
-                           'MSGTYPE'            => ($payload=='redeem'?'0200':'0400'),
-                           'PROCESSINGCODE'     => $input1['ProcessingCode'],
-                           'INVOICENUM'         => $input1['InvoiceNumber'],
-                           'INVOICEDATE'        => $date->format('Y-m-d H:i:s'),
-                           'ACTUALMSGREQ'       => ($input2 ? json_encode($input2) : NULL),
-                           'ACTUALMSGBYGCREQ'   => json_encode($input1),
-                           'REQUESTHEADER'      => ($headers ? $headers : NULL)
-                          );
-                        @$this->db->insert('tt_transactions_gateway',$data);
-                    } elseif ($type == 'out') {
-                        $data = array(
-                           'TRANSACTIONID'      => @($input1['TransactionId']  ? $input1['TransactionId']  : 0),
-                           // 'TRANSACTIONTYPEID'  => '302',
-                           'BATCHNUMBER'        => @$input1['CurrentBatchNumber'],
-                           'APPROVAL_CODE'      => @$input1['Cards'][0]['ApprovalCode'],
-                           'TRANDATETIMERSP'    => (empty($input1['Cards'][0]['TransactionDateTime']) ? $date->format('Y-m-d H:i:s') : date('Y-m-d H:i:s',strtotime($input1['Cards'][0]['TransactionDateTime']))),
-                           // 'IDEMPOTENCYKEY'     => @$input1['IdempotencyKey'],
-                           // 'STAN'               => ($input2 ? $input2['11^Stan'] : NULL),
-                           // 'CARDNUMBER'         => @$input1['Cards'][0]['CardNumber'],
-                           'AMOUNT'             => @$input1['Cards'][0]['TransactionAmount'], 
-                           'RESPONSECODE'       => (empty($input1['Cards']) ? $input1['ResponseCode'] : $input1['Cards'][0]['ResponseCode']),
-                           'MSGTYPE'            => ($payload=='redeem'?'0210':'0410'),
-                           // 'PROCESSINGCODE'     => ($input2 ? $input2['62^ProcessingCode'] : NULL),
-                           // 'INVOICENUM'         => @$input1['Cards'][0]['InvoiceNumber'],
-                           'INVOICEDATE'        => $date->format('Y-m-d H:i:s'),
-                           'ACTUALMSGRESP'      => json_encode($input1),
-                           'ACTUALMSGBYGCRESP'  => (($input2 && !empty($input2['ResponseCode'])) ? json_encode(array("ResponseCode"=>$input2['ResponseCode'],"ResponseMessage"=>$input2['ResponseMessage'])) : json_encode($input2)),
-                           'RESPONSEHEADER'     => ($headers ? $headers : NULL)
-                          );
-                        $where = array(
-                                'IDEMPOTENCYKEY'=> (!empty($input2['IdempotencyKey']) ? $input2['IdempotencyKey'] : $input1['IdempotencyKey']),
-                                'INVOICENUM'    => (!empty($input2['InvoiceNumber']) ? $input2['InvoiceNumber'] : $input1['Cards'][0]['InvoiceNumber']),
-                                'MSGTYPE'       => ($payload=='redeem'?'0200':'0400'),
-                                'TRANSACTIONTYPEID' => '302'
-                            );
-                        @$this->db_model->updateRecord('tt_transactions_gateway', $data, $where);
-                    }
-                    break;
-                case 'void':
-                case 'rev_void':
-                    if ($type == 'in') {
-                        $data = array(
-                           'TRANSACTIONTYPEID'  => '312',
-                           'TRANDATETIME'       => $date->format('Y-m-d H:i:s'),
-                           'CARDNUMBER'         => $input1['PAN'],
-                           'AMOUNT'             => (!empty($input2['Cards']) ? $input2['Cards'][0]['OriginalAmount'] : (isDE4Format($input1['Amount']) ? iso8583Amount($input1['Amount']) : $input1['Amount'])), 
-                           'STAN'               => $input1['Stan'],
-                           'MIDTID'             => $input1['MerchantID'].'-'.$input1['TerminalID'],
-                           'REQUESTCODE'        => ($payload=='void'?'0200':'0400'),
-                           'MSGTYPE'            => ($payload=='void'?'0200':'0400'),
-                           'PROCESSINGCODE'     => $input1['ProcessingCode'],
-                           'INVOICENUM'         => $input1['InvoiceNumber'],
-                           'INVOICEDATE'        => $date->format('Y-m-d H:i:s'),
-                           'ACTUALMSGREQ'       => ($input2 ? json_encode($input2) : NULL),
-                           'ACTUALMSGBYGCREQ'   => json_encode($input1),
-                           'REQUESTHEADER'      => ($headers ? $headers : NULL)
-                          );
-                        @$this->db->insert('tt_transactions_gateway',$data);
-                    } elseif ($type == 'out') {
-                        $data = array(
-                           'TRANSACTIONID'      => @($input1['TransactionId']  ? $input1['TransactionId']  : 0),
-                           // 'TRANSACTIONTYPEID'  => '312',
-                           'BATCHNUMBER'        => @$input1['CurrentBatchNumber'],
-                           'APPROVAL_CODE'      => @$input1['Cards'][0]['ApprovalCode'],
-                           'TRANDATETIMERSP'    => (empty($input1['Cards'][0]['TransactionDateTime']) ? $date->format('Y-m-d H:i:s') : date('Y-m-d H:i:s',strtotime($input1['Cards'][0]['TransactionDateTime']))),
-                           'IDEMPOTENCYKEY'     => @($input1['IdempotencyKey'] ? $input1['IdempotencyKey'] : NULL),
-                           // 'STAN'               => ($input2 ? $input2['11^Stan'] : NULL),
-                           // 'CARDNUMBER'         => @$input1['Cards'][0]['CardNumber'],
-                           // 'AMOUNT'             => @$input1['Cards'][0]['TransactionAmount'], 
-                           'RESPONSECODE'       => (empty($input1['Cards']) ? $input1['ResponseCode'] : $input1['Cards'][0]['ResponseCode']),
-                           'MSGTYPE'            => ($payload=='void'?'0210':'0410'),
-                           // 'PROCESSINGCODE'     => ($input2 ? $input2['03^ProcessingCode'] : NULL),
-                           // 'INVOICENUM'         => @$input1['Cards'][0]['InvoiceNumber'],
-                           'INVOICEDATE'        => $date->format('Y-m-d H:i:s'),
-                           'ACTUALMSGRESP'      => json_encode($input1),
-                           'ACTUALMSGBYGCRESP'  => (($input2 && !empty($input2['ResponseCode'])) ? json_encode(array("ResponseCode"=>$input2['ResponseCode'],"ResponseMessage"=>$input2['ResponseMessage'])) : json_encode($input2)),
-                           'RESPONSEHEADER'     => ($headers ? $headers : NULL)
-                          );
-                        $where = array(
-                            'PROCESSINGCODE'    => (!empty($input2['ProcessingCode']) ? $input2['ProcessingCode'] : '020000'),
-                            'INVOICENUM'        => (!empty($input2['InvoiceNumber']) ? $input2['InvoiceNumber'] : $input1['Cards'][0]['InvoiceNumber']),
-                            'MSGTYPE'           => ($payload=='void'?'0200':'0400'),
-                            'TRANSACTIONTYPEID' => '312'
-                        );
-                        @$this->db_model->updateRecord('tt_transactions_gateway',$data,$where);
-                    }
-                    break;
-            }
-            // if(!empty($data)) @$this->db->insert('TT_TRANSACTIONS_GATEWAY',$data);
-        }
-    }
-
-}
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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

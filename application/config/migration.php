@@ -1,84 +1,34 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-/*
-|--------------------------------------------------------------------------
-| Enable/Disable Migrations
-|--------------------------------------------------------------------------
-|
-| Migrations are disabled by default for security reasons.
-| You should enable migrations whenever you intend to do a schema migration
-| and disable it back when you're done.
-|
-*/
-$config['migration_enabled'] = FALSE;
-
-/*
-|--------------------------------------------------------------------------
-| Migration Type
-|--------------------------------------------------------------------------
-|
-| Migration file names may be based on a sequential identifier or on
-| a timestamp. Options are:
-|
-|   'sequential' = Sequential migration naming (001_add_blog.php)
-|   'timestamp'  = Timestamp migration naming (20121031104401_add_blog.php)
-|                  Use timestamp format YYYYMMDDHHIISS.
-|
-| Note: If this configuration value is missing the Migration library
-|       defaults to 'sequential' for backward compatibility with CI2.
-|
-*/
-$config['migration_type'] = 'timestamp';
-
-/*
-|--------------------------------------------------------------------------
-| Migrations table
-|--------------------------------------------------------------------------
-|
-| This is the name of the table that will store the current migrations state.
-| When migrations runs it will store in a database table which migration
-| level the system is at. It then compares the migration level in this
-| table to the $config['migration_version'] if they are not the same it
-| will migrate up. This must be set.
-|
-*/
-$config['migration_table'] = 'migrations';
-
-/*
-|--------------------------------------------------------------------------
-| Auto Migrate To Latest
-|--------------------------------------------------------------------------
-|
-| If this is set to TRUE when you load the migrations class and have
-| $config['migration_enabled'] set to TRUE the system will auto migrate
-| to your latest migration (whatever $config['migration_version'] is
-| set to). This way you do not have to call migrations anywhere else
-| in your code to have the latest migration.
-|
-*/
-$config['migration_auto_latest'] = FALSE;
-
-/*
-|--------------------------------------------------------------------------
-| Migrations version
-|--------------------------------------------------------------------------
-|
-| This is used to set migration version that the file system should be on.
-| If you run $this->migration->current() this is the version that schema will
-| be upgraded / downgraded to.
-|
-*/
-$config['migration_version'] = 0;
-
-/*
-|--------------------------------------------------------------------------
-| Migrations Path
-|--------------------------------------------------------------------------
-|
-| Path to your migrations folder.
-| Typically, it will be within your application path.
-| Also, writing permission is required within the migrations path.
-|
-*/
-$config['migration_path'] = APPPATH.'migrations/';
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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

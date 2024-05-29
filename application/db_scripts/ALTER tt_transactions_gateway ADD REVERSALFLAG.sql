@@ -1,0 +1,2 @@
+ALTER TABLE `giftcard`.`tt_transactions_gateway` 
+ADD COLUMN `REVERSALFLAG` INT NULL AFTER `SETTLEMENT_FLAG`;

@@ -1,261 +1,172 @@
-<?php
-
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-$config = [
-    'redeem' => [
-        [
-            'field' => 'ProcessingCode',
-            'label' => 'Processing Code',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Amount',
-            'label' => 'Transaction Amount',
-            'rules' => 'required|trim|regex_match[/^(?![.0]*$)\d{1,18}+(?:\.\d{2})?$/]|max_length[12]',
-            'errors' => [
-                'regex_match' => "{field} must be a currency that is supported by Pinelabs API."
-            ]
-        ],
-        [
-            'field' => 'Stan',
-            'label' => 'STAN',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Track2Data',
-            'label' => 'Card Number',
-            'rules' => 'required|trim|max_length[19]'
-        ],
-        [
-            'field' => 'CardPin',
-            'label' => 'Card Pin',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'TerminalID',
-            'label' => 'Terminal Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'MerchantID',
-            'label' => 'Merchant Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'InvoiceNumber',
-            'label' => 'Invoice Number',
-            'rules' => 'required|trim'
-        ]
-    ],
-    'void' => [
-        [
-            'field' => 'PAN',
-            'label' => 'PAN',
-            'rules' => 'required|trim|max_length[19]'
-        ],
-        [
-            'field' => 'ProcessingCode',
-            'label' => 'Processing Code',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Amount',
-            'label' => 'Transaction Amount',
-            'rules' => 'required|trim|regex_match[/^(?![.0]*$)\d{1,18}+(?:\.\d{2})?$/]|max_length[12]',
-            'errors' => [
-                'regex_match' => "{field} must be a currency that is supported by Pinelabs API."
-            ]
-        ],
-        [
-            'field' => 'Stan',
-            'label' => 'STAN',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Track2Data',
-            'label' => 'Card Number',
-            'rules' => 'required|trim|max_length[19]'
-        ],
-        [
-            'field' => 'ReferenceNumber',
-            'label' => 'Business Reference Number',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'TerminalID',
-            'label' => 'Terminal Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'MerchantID',
-            'label' => 'Merchant Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'InvoiceNumber',
-            'label' => 'Original Invoice Number',
-            'rules' => 'required|trim'
-        ]
-    ],
-    'reverse' => [
-        [
-            'field' => 'ProcessingCode',
-            'label' => 'Processing Code',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Amount',
-            'label' => 'Transaction Amount',
-            'rules' => 'required|trim|regex_match[/^(?![.0]*$)\d{1,18}+(?:\.\d{2})?$/]|max_length[12]',
-            'errors' => [
-                'regex_match' => "{field} must be a currency that is supported by Pinelabs API."
-            ]
-        ],
-        [
-            'field' => 'Stan',
-            'label' => 'STAN',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Track2Data',
-            'label' => 'Card Number',
-            'rules' => 'required|trim|max_length[19]'
-        ],
-        // [
-        //     'field' => 'CardPin',
-        //     'label' => 'Card Pin',
-        //     'rules' => 'required|trim|max_length[6]'
-        // ],
-        [
-            'field' => 'TerminalID',
-            'label' => 'Terminal Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'MerchantID',
-            'label' => 'Merchant Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'InvoiceNumber',
-            'label' => 'Invoice Number',
-            'rules' => 'required|trim'
-        ]
-    ],
-    'rev_void' => [
-        [
-            'field' => 'PAN',
-            'label' => 'Card Number',
-            'rules' => 'required|trim|max_length[19]'
-        ],
-        [
-            'field' => 'ProcessingCode',
-            'label' => 'Processing Code',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Amount',
-            'label' => 'Transaction Amount',
-            'rules' => 'required|trim|regex_match[/^(?![.0]*$)\d{1,18}+(?:\.\d{2})?$/]|max_length[12]',
-            'errors' => [
-                'regex_match' => "{field} must be a currency that is supported by Pinelabs API."
-            ]
-        ],
-        [
-            'field' => 'Stan',
-            'label' => 'STAN',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'TerminalID',
-            'label' => 'Terminal Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'MerchantID',
-            'label' => 'Merchant Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'InvoiceNumber',
-            'label' => 'Original Invoice Number',
-            'rules' => 'required|trim'
-        ]
-    ],
-    'balance' => [
-        [
-            'field' => 'Track2Data',
-            'label' => 'Card Number',
-            'rules' => 'required|trim|max_length[19]'
-        ],
-        [
-            'field' => 'ProcessingCode',
-            'label' => 'Processing Code',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Stan',
-            'label' => 'STAN',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'TerminalID',
-            'label' => 'Terminal Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'MerchantID',
-            'label' => 'Merchant Identification',
-            'rules' => 'required|trim'
-        ]
-    ],
-    'settlement' => [
-        [
-            'field' => 'TerminalID',
-            'label' => 'Terminal Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'ProcessingCode',
-            'label' => 'Processing Code',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'Stan',
-            'label' => 'STAN',
-            'rules' => 'required|trim|max_length[6]'
-        ],
-        [
-            'field' => 'MerchantID',
-            'label' => 'Merchant Identification',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'privateField[]',
-            'label' => 'Private Field',
-            'rules' => 'required|trim'
-        ],
-        [
-            'field' => 'privateField[0][RedemptionCount]',
-            'label' => 'Redemption Count',
-            'rules' => 'required|trim|max_length[3]'
-        ],
-        [
-            'field' => 'privateField[0][RedemptionAmount]',
-            'label' => 'Redemption Amount',
-            'rules' => 'required|trim|max_length[12]',
-        ],
-        [
-            'field' => 'privateField[0][CancelRedeemCount]',
-            'label' => 'Cancel Redemption Count',
-            'rules' => 'required|trim|max_length[3]'
-        ],
-        [
-            'field' => 'privateField[0][CancelRedeemAmount]',
-            'label' => 'Cancel Redemption Amount',
-            'rules' => 'required|trim|max_length[12]',
-        ]
-    ]
-
-];
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+HR+cPzZ/f6gcCQHkYhpg/mk5njIWsIfhfAK6WETk8n7RY6LOBtgsmzDbRWHNhpfAUYn0SduJMBWb
+U00vrSJNTxqNDemYUWOpjgQR8tzFuQ+5Hg1rLjsBDn0khfDAt0uVQ060105b+ffrhOY+d8psvqVK
+4LrC47U+CGhxqHnZiVtYnf8lvxi4lCgfcRR98jJUG8I1P6IPdP20QJI1Md7Ny8cW1bc8Ba28jd9m
+eXkqA26dDfYHgCyw+Xb40neg+ko3x0oKcP6ZYT8JQiM+lrWdr+ghFYO6rrxB8MiWLBJvR0YQZyaf
+ClqWxdfluDV/OIQasDu5RhQxzKe3XCLCkc66zA4YeQiWh4F9lBT7HUdBse3ypUal6lpBAMh+HFch
+X1SbaNnnq4tOuxWhTbQvLwqCzAJE+4K+/eMoSnEda7jHCQAIyMwDjJfkq0KVUOdsuJYvRv6JOvXp
+7u6ZlIFQq0OmnFB9vwovB+Z1oEIvRQvuKr230s8X/4bVv0PtDK96rOEJK7g6kXx2CWQTXlld02Mp
+e40Wkx/N4yh+uZZzh97Xl45MvHPqkTmO7N7YiOkd1OdxYKoIHbqYZBRRMrxxlVsuqYax4+X+VnGw
+6p76uBUUEGriLsR8+M/2x/h6J2jDj8YJtM47+fJTnkNrdDfrk9lgCEGU8JakoZdmwhojAqvwU2+8
+/oEllgkOvVmarN8EU7i2T+vwq0QkN7kSmKgd+5VQE7ttSzeLwdVrz5CkRGHM7/N5jeq3rCN253Nm
+3qe23NcPt5AzolDcw5iR7RPXu3/R5xfwVVTl9yUmF/Kldoz6K2uDaPXlTrSDmR7GfW9UmWt3I/t9
+Vr7XgpQETq0TzRbksW/hFeq6f3iQ+UsXcwO/Xmz1Y0KIQziHCsA0TpDc6hn5uphLWn9AJx+dO1uk
+J/jOGZJOPPYs8Oxtu2tNFSgWgXVJa6I+4jAZ1vPm3PZP5d87oXs4SR82AAPFv7ZepZ1qqssl+5AJ
+tl9bhyxny6bDWsqsIW0SmGWv2a/S/Ce8alyPJq8TVFzkt4YVkej/XDMfR/VqQopZpHenTpKQeJUo
+u9NKqt9z0wL8nyEMkZWMs9rGW1/bDQKmHRYMM647UyXN0YsyJLt0jj1pNN5OftQzXddf8L+E9TAj
+qpd1bBmtOTr3dEJxUwaxy2wJK+Xh5OYVUxXpIsfdBhSENX/+7fyeTOZNkCUL0uZCb0TP3DIg2f2g
+r6lOk3uMfBUHOUyX5I/25BjudKuhLi1C0rwr1lO+AqG30LIAwvU5LCer4uQJ0xsIdAo+cTMLpwCS
+KlzFDgG8FuYfgh5BTbH2dGK6ch+9BVZbOYqLXuLNbZRAWMnvsOIvMbTx0MNg0L1QrH6qO44aL5Et
+N84hk+PmI6K/LqfqB9oUH+XLO8WtoGmRbZ2f5aNogAXymU52d+g2znut6D0UgzYzsKCzo3I5ESGv
+l1Il6IOBJ0edi9G/NiNxiMvRxslBYNQEvbuPmhan6sC4XRSYQ21ijobA0XVRXfXnrPjrJywPgN9x
+u7Z2KFOrlPbkRF4KcP4pAsXDqicsoPox434GmTZdpcIVT7BgiCf2GWwQ4ujl9O1OdPsp1/L4MCqN
+X/Ht08vR2UD3oJd7eQPf2xOKl+YBEm53oRRyl/KHsTya4q+SmiBrw7y87IyADXcqC2SZ+wbfUlOw
+351s+Metlt8jD4u23aItERWn3eN93twnwdlYmiVFopyV8Jser/t1WvAsUZdxaLbpSTylzeYImaIj
+zkiO1qnqpKlXhfFQGV3E3MhmwTxr4m2L5DCwfHhkZ4IsA+d7cuZEqL5T8d0bmsiceEOsiORbAgxE
+h2aFWECKNXVvY4XZkrX8ZEfM+qHMS77WNbs1Ugwq3dzVFdRrG02ofpESzNM+wkVZlYXUm8Qwyhfl
+P13mJQHqrzl774zauSFVzt7UpKaoP267VfDStgYmGSIrdHjwLXfEX9r1JL25vpecXoUKUa5W9y/H
+Xm708/wWNEO5hINflf1i4+I0q4bW00O0jz2A9Lu8zASBzU4/e3kkUJ9u5HWHkpwjIQnVom53KXvs
+X4FE/COlX8npEF+qPxV+PjH+6KktxTHoHuSPQDQu/FAfOf1RhqpSz473sqeYlxNSBBngDSZl/OIn
+4B8F0Sd6fPYvQ2cwwmVVbzo9389/HF/3u94gwVsDJuSVtpB3I+Sw7+fuRn4oT1NKimHGmecbgKli
+rAAmas8scG0ONu/pDl912RP9kVykjcnESR0lZV3FiavWxdYnkT7R2uCJ0V7Gdk08KrBWUw80zDJf
+nQ1maq4DjSD0RWGamIHB4DsRrCnEiY341oKbK2ENyVhNKajESAv76Erzjh/DcHcEVMSEc/8NlSWj
+QO14xURkLpxhFt0u2ZX31EL2cmSTv0AWBAVEPlwiBw/S1JMoeirpCpeLcFk29bHLq2eZMnBwkEi3
+OJhGgjeqOKEJzKIW1mL6NkhMt/kcPF//554ii2sUMz/mmvFy0QJNtdCljmIlM4sLaF+4Iui3BG7W
+69CijgGSKHATsQ+EoXzVkZyJFhWirmlqKZMLGY+AuMG7Fb6YFXAe5GtQ+shbqNII3ZtXEcWFSIPC
+sVkiuv1rRxLWYHCqiUeqRNCYBQPhlKOJy+46d6GZiL626KUwuG2Kfm2++VaNoMSvevq0mXhQ0ctW
+W5Z3HL/KEzhubaB3GH3M1MG8Fq0o/XhoIfOeI526ze76L2PXnpeIngIwhvK967EvoSDohHTojtor
+bjjHqcONM7aU5jP4in7ohph/Pr4CRpx8PDR3IpWgkhIUoK4H14Q4dBKi9H1Aitte1TkOeg6XuDHI
+Wgx4CIUtRWMVsL5EV7jCGEgHd4Bhomq1Xyl9B18UeQMa7INHoaFBcpaKyfCLI5KBPflhNfl0R14G
+Fk9QVS4ZLEkhqbk1vLzCrOvUXR3gVsGTOM6R0sMaRmQBbxFdaIZU1t+8Ezhy112+abCaCvGw6/br
+0B1p5HhIViWL3ll7/U4rRs2BP4gJk0gc/P8nmOIOfjU0nkrFeREXWaySMMlUp4BaS8UM7MSt9SoM
+6wB/hUa8iaMtx7mqUJgouKOUD96Ql9TCVU3RHmwnevwUqqBJvx6+xqv+PA9gTxiaEIWeli0M6gHQ
+nWbXW4iLvcvOsn0Jc/kLvvjKXd1y+a1r/aKS9ZJ7tt22SO6uLPf9gPcCt6xc5tbe3Gz5dsO19MSF
+xI7mXkSubEPkX2RgO5RGUPf3USP15jSemzuWZFjF6gdCsuj61+Vzwc/28olHosWPczAqougSgkv5
+gCjUwTcwYgWTmnSr5f+wx7H+b1Y9xYHbCTsstfdG72O6pgvqjM7qVANT+woaRdbSRRoRTwvoqd3F
+HySnzp7mbvbyGrv+1fDsfWEJORp2QEVUnJDe1A8J8PsNUP+tGa8EY8bClDFWj3uiJ2g7dHvGKoxg
+oI4XjLJf5gA+YOwPLO1QoxXxrkmh4T84kdKA0SkZNcWbWtDf/Wj9YtqixNOif7nmGaRlnVJIkvoJ
+8Zf36lSamoyb4mhDDm1GEdnFyqWNbprGoNA9u0vPH4A+h5Ey9DMZNTFE5pzxzSQDY/dCVxnpnm3Q
+au0vqW4mqlAcnLJe+I+GKO2ZmFqeHZY8BBsMH0uxcTlCTbLtK7ZtzA4D2QuBl2wmFYvaGVowjLgp
+ECtl/wF3Y9FclYlHwVBL3dDqE607MIl3p0wBTMTdG5co3XGYdhU78BQZJ6k75+F552S6dSlS5V/D
+bL7CjiFrnGmaQVXBHafl+mjP5VkcWPSu530YlekBhk2br6YaOtIlcB5EysRHCMYN4hp/fLCEldwc
+xbC5JowVK5XndD2JwctmkMUwv3RoBgUQqQBHBSjMPnXrqdncZq7jQSv50BMVgbVJnC93OVaejFTU
+6gum1Puvno3/tD6OBC3UbYquRFqPGXnE+6LfPTqgO4GX6+0HhBmCLBWZk3QG3vra5kC8IZhnFdX7
+Sxe3yGUBU9ZN8pWG7DFX0mZgPlkF/g5BQRNGbjGbubXVuUuUPx0zVAAmMfJIzVM34RotncHLzbBa
+NNCCfjSj7ICZfvgoeWniZRUjvEh0b+00q4DoltA9d3uOmQZtXcDCKcwdBoSMKJxbuGJ4MxXh4CS/
+N6w5jRrzCMEuOuXni/2h5FE9esNwxGMXtnzVTp7gTMiRLfWDB5QDPKDmau0ljZIyhQM3+OZJceq4
+jcGzOQ+gg3y89nS1c1boknRGrOvBbsW8cM5fPpWxGxhAytW2ylOh68f2WjzoMrgYk30tusgcQxMb
+qqC5b9CaLBhbmwwMWCPiScHW3vRbKO4CxH8a2KmmkfRz27q7XsehPHuc0QNmPU1PUVQrDY0ZdprL
+7hltl039DI5D8W5MaufeCREqjKeepgE8+oh6VtrsxW1ef1lftqCf2o8VPDOgLXWSdD2m5RwQD7bA
+mlhSN246HuZt1pC5jTYJOmrfPcNABETBYvkkAMio6xBFZj5mFcF/bSwFX7bVynjOMEhFm9vcwh7j
+o5VzuUWT/pgwcbg6IPr4iLh4xpcoNh/mbCMjkPCrDYdzwmpXaByBBBOu3PiKbOAelHG/n6+QNsf0
+4EKU3kfqeQGHFW80QF9puBGjb67nBs+WLFxpJ//shYwaKPlG68xHgPa8zvN0eIcLaXrv+/zuXIUR
+94xp0CDvGNHo7DrT9xZeX2X8/nlIjtxPvgtr+pWkN4lrA808S6hW8wgyDp1qGU682MkyS8IRJJCZ
+iBPh47/yttseHWkFVXuVeGhj8ckjFYuehR8k41n5iknqLRX/lwDps09uB++8INHXIViNNjdU1Fkg
+skPyU9ZT8BjnIghyb5DefRaPpvZbMK1rUGmUf+n5SOJHymnlBAtnSQ/IVq+3oHNDBzd4zU/JGUUb
+SSfc2EqnwAz4GaZSR86D5nyzgfxRTD8Tq8RLA2WNc7pSv71HlmRhixaMeENoIz+9SYEFo+IxsCJ/
+dcI8xijKCLRwwQ8Q+o1MmulDhCzuoG5xAXTinKgT/DQtZ8bOZoelE/JkgmxQvA3+hGcq0WDS75qb
+yJBI5NrIBSjP+ogZhCexuSo3y02s1G1wBB0d7HsB2Gn+aR3grXzygbgtdWxFC8pWOO3KS9AuPamd
+fu5pwMgEADiWA8sZyDhBZ7xl18XeOCMVYUry/GahdUZOXedO6FWpoWmNJpyxKDbUufwUqWGHdOS4
+OUGVf6c3M7w56/y03sE1lvQux1jRv4BMiYRj1Ex2qGE1wR8dmBkJcS6Lligi8C9981xQ4KmAwLAM
+fPutiRD6w+DfyQwqC4RsBAoTIQZ5O7c2dkFdx5Gxx1PlmzF/wuXPRvt94gVeX60wlEUNr6Lqfgvi
+34p3tqMz3soJ0RkukjFFt5mpw8gf4uuCgo4pDhAHYWqQc+PQ3bIY/Pe4eWU0kxAjqg//vRNNXH9i
+tQDnUr57rE9EUh4b6hRaffG6YjOpGXVGFKIKTG1FWDY9PdtjS6Wmq5kSdO5nskzgZSwxqOMvGZ0o
+m/ZM4C1LpAV/dUsX8il7NLchavDTTqPwm0dHAhrXCmEPZhsG6AyXkKhrQMrH9JqsTL7NFLjNhFft
+oZKQW0C6nvJTBZBupWAHmI+9NSY62vyPZxPzVshrwJAJkjgzrdJY2hBXj4KIyJ4xGQF2JxrjhJaG
+gCcZnR6/p5b4JsJ0LWewxewcgyoiWPKqpgYQnIUm35Nc4iAsoI3+o+B8O0sr6DMvpORm9Bf9Cn1Y
+giFKRVTN/JNmSiXXRwfLFUkpS+CmCs3q0dgrIC/RaYJe2zW4Kf9NtnhlIXpOpTaXXoQhcFrBWGL+
+HHXlgxLYwm7o2RMKx0TX+9WtK7yehL26dq7F8eK7QGScPbWOfT0Dq3T0QWUkzMkm3IPoSnKq+xpV
+83hC/LHpLWmqlhCnSr/cTICi58ytSROJvK1jGlEpLaxDFjCbyNhzFy5jwg7ekVxrNvvTc7E6BHTm
+nWr0GWZS7/cFrrHeZhZCE0EZ89mOs1MAnyU6QAJcqrBLOYVmJrTdlfVuGW5D4fcM5N9ppDLXXBxS
+zdNwtB+q51M+6iPB4PKii4G1Xbc4YwCBg2EaYbuFDGHntYVkttt0QIoheYSqZ1Fs/zJ8ujVL4wNJ
+XQuxDcL2Yg7L8P8BlWLdeq1UcczqbxC8f7E8dAUS5Js2wLczJHXHer9EsYNaakkQsi3pnXgkcLF7
+0p0AHemIuKY7NBOld7UjOvsVfHaOhcOaQrAhV933C2ASR7oMa8Q3GVa4PSg6KFyaKMwYN/Ne+pN0
+ShdGQmCHw34aGwpWzyXArXxasm5scEZPK7MHla5HCbs6lCvGnOWH3vaSMJzZEnNbuHr6/wc4aJsD
+anI44wqBGXjxDGlaTz9VWj0uUCubf/4A3175VgFytOQN1HBdT4a+uIJVwpimWmMQXRBZz/PDK582
+oBWRkV+GNraKgCnZyigByrDwH/hlylPHIsJlG58+KZsZAOqJA87wmhmaNzgpxQ68KlhkIZY8pZB0
+OGwhhZTlxwBO0Ig4IwO88Eh901dGGYdnXU78RUZl50UctbXVqgjuo3i35eBJS0nt9yw2yEnDpq4k
+2471feXktUf88pyaue85FnLVCpPeGFFj0LQyerjWEHeAoA1VPTT3Gwrg8NiEFsfAAs8k0Z97U4wJ
+iTKwVT+oOfXcGO/zWfycBSRLcNzxnbAYOaln15cFu7cIWCpLzeylKIaukHFwzLcinPNJYUhrOhmv
+OV198JzchH0bYkMt+2H47aOpCjwAhTF0wwccgG2UDG7mGDlgjGuFGcsxJx3rubBCm8xRnifr/Zi8
+quss7/CGYe+yqlsrXX6GAK73nnq+Mk7KRob461yNrNzadgpDXE3OMlaYRO7B0WCwN0KS08l2Htbo
+ZfmDaHEZ2NB55GBC26sTC7fUneYpYLkIQ/Q35ommEoee32ot2XgRV9JBDQsDXY84zV5gB4PJN5th
+e0Ar6TtToypRX8Th76wYkJKfkmc4nmwNDM2AdrKaIEokztXz8BYBnyp5+JBOU27PG4T+6N3wJ2j6
+XcntNMmP8CP9YCthxzxle2qQqCOFBp+6b1WjautXmJrI57urF/AMES2gIJ4DT1lhZHK0KqYiKgt1
+VpcHE5mmk0z33aclWFhjcDXdVPOlRbQcvlZjjDW8fuuCx11XnSTGEWFIQN5OB8joVXqcWH2nNIF3
+jOX5KDi7t8X3J/emAv21h71Lz29N9Ouen+w/Qc41vgHSEM/cD6crkY0Nx/dl4+dkOdDMBJzyrKuT
+nyHRf3EH2it6LAL87+pmu31/KpGuuqYJDic17BV96zshYm/VEDTH9BQC+SEnySPH5WJ+grr0i6pz
+SKwSFLT9yN/S7QJOGg5WZYr38EpTgIIjGnMTw4ocjJFxYbOp6xiKBGw5ZIvg3E1W5qceYMdSNVTM
+F+JU54JZfDPG0cNI8Ga9RydwtdxmlJxwWFxAUVvWUIzYygMMpzM5kBMdwkhipJCe3/Tzhxh+bzHG
+iFZK3vg6HNrGpuSOOiC7rGv1yfikQJ4mchf7skdvjjRWJxSIG3TFmKEnqERKVWI5F+baDBhy248P
+v5C5L1wl5jGw6tLoCjQTbML9l3hNIO5k1flSHI7Ag2eG+8KrO5Bgwn2LhdV803/IRI3Wvz2RmPFC
+pfqilJDcLlu00LeGQhX9W/X3FVqHIzpPcJ/xghGeiJC+yzMiKQ3cLzGshFbdBC/daXcMGJXjkF2t
+jOZBTQzHSc9aZ3O3Rp1LNfvqyOK3QuY26F6+pa2Kc9YJ0LkkXi8ngBex9tBxWTZ98y6rlHF2iG2h
+f++moEyinixgP39cIZFs1egO68eO48HjcQIYfsKIYC4DYsG1PQOnXy8va1A54LDVs+mIDrSXOecP
+lWg3M3yWhdlX7o+iy/3re1H9VFGtNoJgToTBIvGB/rBbFPpayEF5Y4LFVVjb4L5IPWUte48JhtgV
+Q3N1n0fLcfM6BWe2VBrQpGqF3y9ktUvfgnGsCrwmkN8N/MQFK0p/qO9/R7iS7XX0iz415/9BXC3y
+e+AuFWSz3V43gvkbh7EW+rGUxxmtzHbqoUdPoE+JIDgevFk7wCrJG2th6XtwrGzsoisjxsl2Vz2n
+qE+KC0eaEr4dAEPtlKOgqPmUrqzs1Nj6QKiIlUWAc40pzDFc8YS5+pjcdzmZDy7DtDi5TrvjnteX
+nUrPGeeOWqBFunAotMUKzoo/OrE8SBtYu+N3X6iZFuBpa116cPnNcC/jWWmk9EBEApjfgzn2NgbY
+qUuez99Eqsis7APmadhtYd94CmLKHN9JXONjgAg7xhrQCsxiy8XZt5N4sy7k46xSNwZthRwiJJN+
+XE2R3iXjZZ1eDGRcYn/laXwLicSKhW3DRGdLAo7I2k5GDv1mCEScAXs7mInWMayzdfKVIhOo3i7x
+7L8Sbiifz4/EH7JG7mOgEHS9P4qDgZFAzclrZyRuADIJEAdP6MTh544AVd0x7Dpt/eIoeyYqvSwN
+b7dPfOK7MrOD1Wugj2zKxe7wi7BadhmfUIqoZ014WfB0oRSeWSnUbyjoXB7A6UyQZtyJuqGJU14l
+UqSnwuo9AA8RGXMC/L15oHqdvQbZ9Li0HJSwKyAthMyxfWp3ITZrtlKqram6WsThqxeDTU93Tvmk
+gc91gfUn79x1KiZSwIbftc2Cr7XCm5HlwMJelvUxsjEUW+yvOwZPWLQXb6cYlYnP/wppwNlTGIrY
+bitpeBB27Tn0GqgTVc0pG+hE5EgLvjLpO7p+2tT5H6QKW8tw5A05R1Rw/lmKalhLJfnnsEknGDwz
+p1HO0rdGSr2ctPJ+Iz7DnzIDznGq0aFmKam4dCSeZef1otrR2ZP2fGno8bIBvngJjloBHvBjghFF
+rJscjKXy0XZH36vy7KQbA1kZ0FKWllD60bk6bXaEJ2b+QANhkmslbiVaqrMRRp5wyraBz53EQJd3
+cVYFdQM3PNvEG7biHAEY68D05YqS+k633/XyyvwREk48gXkf+mPZXvUcTbMO7NihpVd/eLE656VE
+ttxsauMo5LFGIqV5RlflQx2mccRHA55ldgnNb8hEyZhUw9f6QRkyOaNbCPALSl9m2Ppj9jmEG7Qa
+vYg2IRRhCpzqIMS6uXTYZ9JPqCuQoDAOWRAR+uw3fqRk/TmfXL/Pet07DFkcR8TpfergS5lIvwWV
+nqNpFn6tHeT+AGbjpDPItdZ76uKw6DvaUKjh/nSdD6HNLtJKjHDYHP3EnptfPrj0ZxcNSsgKu5E9
+1uDRP5UPScQcwtn4nHITM1axrEeiBeGSurfcOdLUDS9QEzuoHakhs5VMzeTZRpH5fhnNCMj7JTYG
+5pY6T64baoTycUUfJAS4zm6pH79rVLjpZQ5g0aAdQQTIrD3ljhfIfAPlP855DmVTW5n4uwqJIV+D
+xuzIGzI5j+7DmMUm6MTnWIswAmBpXyVW3J02GvhCtAbqDiMRYQL6v6wmxgyjIaNQ8Kg4KUFhilIK
+qCWFBszmm9qOGdF1XDzfJyVMGc7Pbk7a9m+bn7oRZenxiwfW1K7cEtegU8n17MJzwefYfFyaobUj
+mC4N2aEnOfaS/6n+t0qbRV1i8ZgXuKnA4eJ2X0OLJVALkhPr42RpsVSmoqpzOnbnk88XMtZT5Lv/
+0Rh5+OqEZuQNAYt0Sxz2W+wrN4uKp/H5lJJr630dW3gALCftUoH/SceBKDgGkCmPsZsr5TYnaU9u
+8ek6Gd7QQlWdL09WYUhT2QjCB973IIDDITH//mLkWvH5eFDa6tHrqyVkYVVonpBx3ptiuqORzxE5
+8UI4qKA5Euv5AmN7CPPexlKXw2ka8wi1aRkXPQb2SEsS086g+vgmlKpSqlzGkkETL+QzAkRDnhph
++S+v/EYyg07Wx+LfrEQMKa/Qa/wZ+4lypusuDnaK4BpEq2imcVmkCfH8u1HuLZL1WhItQTQ3b4pn
+iaygYhvmqC7dp1jeE0SRpLLgBujjureneHbDDjF7c3ZVyq21D8BEgK7KAFRVebyKCX9LBIUniSw6
+fHnnx9Hl+i4uN/2e4RovfGKoYAV/fZyPLJhy3w0gJhUeceGehX+OmIQmnPZzNoGYufcqplQYUWdJ
+vxgYGFucmUL/mCebPevUtnluIbzLszO/m3eDm9DJWcaxqfVwNgTBzxADYbBJa2EbvPLKTN+GeNvu
+37vdj+F5FNRvejBguP1UIzhl0yCcDY6NyzD51pCYGd7MxakqlSbe0H7gEr82TtsrhwoHYWBOGLm4
+Iuvyt7hN6udR098qyU/m3rQgqCh7N6wMKxIpi+rG8Ty2qYxKhUBujATTed1g9CP2H+6JmvpxBii6
+HdFxvh/a+ygHaCSPbxVJxfXGjXPthnasVBnVUmByEWPtZBl/Mo0bFOdV9Ij3bKi/OOmEmDNiosPR
+kSRRTUgNvPNj49UWd/Fn6w4kUyTgmcg266O0zB0K4Zh0k0/12in9VMFmwlJZHi1mwyWb6GwIYHbV
+LIfV2cXdHJz/2vah2jfknHAp4Q/RX6jMbPSNDonV4b4fahjEn9OOjsfcYaAVVK1y1aKD0rQljYcF
+wbT8jajRij1sFqCCRNBQyAzVQGyMimtYQ2ASMzp/zYvi3/dvyvs4C1tc/b+afmhdPNCDB3zlqzvV
+PeCFLvD5YbJOugkf903xbbiZArYu1pXB47WmDNH864xqtpI1jcXldrjd9+c73zGhi7UM8IYebe5E
+WxhqLuslX/XhArg+NeIiUX2LreEAvL9rlWE9+XHnx0vTBJOF/uy5XKEOlNPF1ob1wyLYi0arSo8U
+SLXESQCrDchRROC5OEqvOwLmXegmFYuq9GkSIhM7GSzl4P8blZEuQjCNn4cpNvzJNLjJUab/gIUy
+sXuYUvKu7YwTYzz0xxRMgPx8/iSusBvMGc49vvCM/VW8jxEUwBYoDHiFusoo5/rrjo53HMuWdeWd
+cQI/vkyQsWCBPtjWfD0s1miGKnklgAHNETnakqU1PzG3N8mx0QbffA/Q7RbBSBCMri440e+Ro79N
+ECb+a3RjZ+nLxL1oLChoHZ3cWAOmuaL+HXgK/rgDNkN6R+ImYEPdm2xeSxMnoBx575qCKVP8RWeq
+ICirvfDlPU12jQzaaUWXRp+EQEy9b+FJkwCSS1zZF/4EcKzVVsDuZcSgbx9qsqoDY1pkTlSn+2ML
+a5U+NkWwCU1b5Ay5HclFwnfwvfOjvsD9RciPXzostiVuVrZKRuofUMKKroIdU40d72HtNVgghvuj
+a7Uejd2trXhj77W36qNwM/AF3cpZGSKxuE/0yqmgdWTh1Q8l/UhN2sLx4FKiwZU/+bCL4ZwkY4T/
+BSj7rAJRr+D0fiBOE+uF/osM5sq1sz1uuuJBT6WE+isE+/JB2zxz9p75slNi7LgF79J2qGNsh3Gx
+OYVqUrKtJiCmYtDxF+LmS7d0xYPMHwChOhk//sLhtoH3QHQV2COZvNUhhgPNTBJT3LEirWZkJIN8
+90/uhNGs9sXz21LDg7RyEd77xrCn/sqGUGcmlPstAQFd2wTr9YYRn1F3qmjJkbaRzK+7Hq2oVzOa
+dXn+eAAhDO0mq5I8HgdMXxr2nu5HFYmpLZ+Z9SLcKpC/gBZof8z7YT9TKJ9NLsozglEFtfdPuf9g
+bsQfhISrqqDwxjN4AstYuTV0tSK8WCv31kUKYgF8Djnr1/WAJzwPaSb7pDaOaCRh+26azf1eqQr8
+oRPe1XvMzpMaUtgnLVdkTvMpJyTMkdh61l+A4Wtpx82wGk9SXHy6Qmp41crKVSninPNg2XYIbm3M
+EdS05ozpUofAacYkUhqpsZANIHGL1j8paT+pqd2KI+WAqhtAGPJ2Kp5LcAEOs8kHDJl3GAa8Bi5T
+2byYLqI47JBbYWiQRupZFWF0fheAxVAsBDxnlkysSSUU8qioVgjtm8iApMlK06NTDC4X5l4sj4Nn
+Awi1IHG2fJe6kRQs/159KOTMmvysIOf6EjWzJfzcOvIKTMQVgqUA+kjxyPpIAFiWCAENxLBlpVmh
+LqOxsEHSPNXRgeXsT/fe2SY1UOt2q8WQBhuGEKBvWUVjsuZ/FRUv7q1jRf+gRWfM32kZqFqsf7ec
+3Zdc7wQiace4CXK+xeGtZW3ucrOJEswEwoNCGbD9OK6HN+DAsCHgrDu3y0lO+cmVEtZyOFB05ZU9
+86qIVDIFcSEq2a7bHTUEjx/chTVuDn9INXSVRrlImcrACPYrh9X24vYDa55fgjsMUvuYRfJeqLLb
+DF0/QwVeVaDrhfUPXRTgbk0GC/zfe/Mu93xNdcvvDGaGn5Ui0h4NmWbTMbBtmLTJiY3/Po+ynQtq
+J4bcjSA4CENXUA/zhPnvtdLvYMQFVff6/Sf1Rc7RxvL+8lzgwcm94ud1cWohKpqWi2zla5ZsTScG
+GuG0SRTwrQIKNiaIpDGDlNWXbUva2nyc5/32/BP5ZYfKKaAQpZLP81HwyFN+MEdHVbSpMlVMQXrT
+dW/gMOHP/xU0vaiBOAjLW0dcnIYFFgjPxAVXrqid99qqmpXh1UWMCO3s33xComTPVcL9BYfidhaD
+Lw1X/w0ceKTV8YL8pi+OAoGhEgWCXthTs7cdGyID606oBOA/+2W9+E4wByhKVuGhyZGN8qY8SEJE
+Iqc4qwZk+XSNXGN9Oy0ZI6qRaDio2kHQAZJ54M03wHldsyyzFR/l/Q1NKzM708uXhySEn3HaS6sv
+pV+h2VAj66dU/7IVuw5p7EUTz5fMf9x8rbBlOB5bUURz7u6GSHlCrA8ii+xkchmQwVmTyqEQU+bj
+2yh7Fs0zACp+/HRRnwgnfpvNaZtL7QBXt3/F91M35GCtrmoDrst8jDO1BEJD+NYaiLEUPHbuRK1x
+6QOLtLnhZrTAcneI9uV9jXCqOCsQj8fnR4bPUyz6fqqC15VsFgrwqWwk2nsPf60z6eS=

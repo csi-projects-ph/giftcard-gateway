@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'dac-svc-rds-uat.clnio2au1rmq.ap-southeast-1.rds.amazonaws.com',
+	'hostname' => 'dac-svc-rds-uat-temp.clnio2au1rmq.ap-southeast-1.rds.amazonaws.com',
 	'username' => 'master_user',
-	'password' => 'QYKuGWVnA5E4k8bW',
+	'password' => 'jtl7CNUcIe0oatoe',
 	'database' => 'giftcard-uat',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

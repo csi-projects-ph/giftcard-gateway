@@ -1,84 +1,167 @@
-<?php
-/*
- * Response Code and Message
- */
-
-$lang['0'] = 'Transaction Successful'; //Transactions is Successful
-$lang['10003'] = 'Card Program not applicable'; //This error indicates that the Card Program entered is not applicable for the transaction to take place. 
-$lang['10008'] = 'Authorization Failed'; //This error indicates that some of the mandatory input parameters are wrong or user performing the transaction does not have required permission to perform the transaction.
-$lang['10009'] = 'Security check failed'; //This error indicates that the user performing the transaction does not have required permission to perform the transaction 
-$lang['10010'] = 'Balance is insufficient '; //This error indicates that the account balance is not sufficient for the transaction to take place. 
-$lang['10018'] = 'Transaction failed'; //This error indicates that the transaction failed due to some critical server error for the current set of input requests.
-$lang['10023'] = 'No cards available  '; //This error indicates that cards are not available for the transaction to take place. 
-$lang['10042'] = 'Insufficient balance'; //This error indicates that the balance is not sufficient in the account for the transaction to take place. 
-$lang['10059'] = 'Amount Incorrect '; //This error indicates that the amount entered for the transaction is not correct. 
-$lang['10064'] = 'Invalid batch'; //This error occurs when the same TerminalID is used to initialize multiple instances of application.
-$lang['10103'] = 'Card Program Group does not exist '; //The Card Program Group passed in the transaction does not exist. 
-$lang['10120'] = 'Inactive pos'; //The POS used for the transaction is inactive.
-$lang['10121'] = 'Invalid TerminalId'; //The Terminal Id passed in the transaction is invalid.
-$lang['10122'] = 'POS does not exist'; //The POS used for the transaction does not exist. 
-$lang['10123'] = 'Invalid username or password'; //The user credentials passed in the transaction are invalid
-$lang['10124'] = 'Invalid ForwardingEntityID or ForwardingEntityPwd'; //The Forwarding Entity credentials passed in the transaction are invalid. 
-$lang['10125'] = 'POSTypeAuth failed.'; //This error indicates that the POS type authentication failed.  
-$lang['10126'] = 'Merchant Outlet Auth failed.'; //This error indicates that the merchant outlet authentication failed. 
-$lang['10130'] = 'Username not provided.'; //Username is not provided for the transaction. 
-$lang['10131'] = 'User does not exist.'; //The username passed in the transaction does not exist. 
-$lang['10171'] = 'TransactionTypeId is not provided.'; //Transaction Type Id is not provided for the transaction. 
-$lang['10172'] = 'TransactionTypeId is incorrect.'; //Transaction Type Id provided for the transaction is not correct. 
-$lang['10173'] = 'TransactionId is not provided.'; //Transaction Id is not provided for the transaction. 
-$lang['10174'] = 'TransactionId is incorrect.'; //Transaction Id provided for the transaction is not correct.
-$lang['10175'] = 'ForwardingInstitution Type is incorrect.'; //Forwarding Institution Type provided for the transaction is not correct.
-$lang['10176'] = 'POSTypeId is not provided.'; //POS Type Id is not provided for the transaction.
-$lang['10177'] = 'POSTypeId is incorrect.'; //POS Type Id provided for the transaction is not correct.
-$lang['10178'] = 'UserId is not provided.'; //User Id is not provided for the transaction.
-$lang['10179'] = 'Password is not provided'; //Password is not provided for the transaction.
-$lang['10180'] = 'TerminalId is not provided'; //Terminal Id is not provided for the transaction.
-$lang['10001'] = 'Card expired'; //Applicable for all APIs except CreateAndIssue
-$lang['10002'] = 'Card is deactivated'; //Card is already moved to deactivated state.
-$lang['10029'] = 'Card not activated.'; //Applicable for all APIs except CreateAndIssue.
-$lang['10004'] = 'Could not find card. Please enter a valid card number.'; //Card number passed is invalid.
-$lang['10012'] = 'Validation Failed'; //Validation failed.
-$lang['10640'] = 'ToDate is incorrect.'; //This Response code is sent when the Transaction Filter (Begin Date > End Date)
-$lang['10642'] = 'NoOfTransactions is incorrect.'; //The No of Transactions in Transaction Filter <= 0   
-$lang['10645'] = 'StartIndex should be greater than 0'; //The Page Index in Transaction Filter <= 0    
-$lang['10641'] = 'TransactionTypeIdTo Filter is incorrect.'; //The TransactionTypeIds in the Transaction Filter is Invalid Transaction Type or Multi Transaction Type.
-$lang['10181'] = 'You cannot use future date as Transaction Date.'; //The Begin Date or EndDate (in the Merchant Time Zone if Multi Time Zone enabled) falls in the future date
-$lang['10182'] = 'DateAtClient is not provided'; //Date at client is not provided for the transaction.
-$lang['10183'] = 'DateAtClient is incorrect.'; //Date at client provided for the transaction is not correct.
-$lang['10184'] = 'Invalid POS.'; //POS provided for the transaction is not valid.
-$lang['10185'] = 'AcquirerId is not provided'; //Acquirer Id is not provided for the transaction.
-$lang['10186'] = 'MerchantOutletName is not provided'; //Merchant Outlet Name is not provided for the transaction.
-$lang['10194'] = 'Invalid Transaction Type'; //Transaction Type provided for the transaction is not valid.
-$lang['10196'] = 'Amount is not provided'; //Amount is not provided for the transaction.
-$lang['10197'] = 'Amount is incorrect.'; //Amount provided for the transaction is not correct.
-$lang['10207'] = 'ForwardingEntityID is not provided'; //Forwarding Entity Id is not provided for the transaction.
-$lang['10208'] = 'ForwardingEntityPwd is not provided'; //Forwarding Entity Password is not provided for the transaction.
-$lang['10322'] = 'Invalid fund type'; //Fund Type provided for the transaction is not valid.
-$lang['10372'] = 'Card already exists'; //If ImportCardNumber is already imported and the user tries to import the same, the transaction fails with this responseCode/responseMessage
-$lang['10373'] = 'Special characters are not allowed in card number'; //If any other characters are present in ImportCardNumber apart from A-Z, a-z, 0-9 and -(hyphen) in request,  the transaction fails with this responseCode/responseMessage.
-$lang['10375'] = 'Imported Cards are not supported for this merchant'; //Failure due to Program configuration
-$lang['11037'] = 'Unable to locate the beneficiary.'; 
-// If, 
-//•   Beneficiary card or beneficiary PPI customer is not found via card number or mobile number provided in request. 
-// •   Mobile number of the beneficiary does not match with mobile number sent in request. 
-// •   More than one customer exists for provided mobile number. 
-// •   More than one card exists for the customer. 
-// •   The beneficiary card and source card do not belong to the same CPG. 
-// •   Beneficiary card is inactive 
-$lang['11038'] = 'Fund Transfer is not enabled. Please reach customer support for more details.'; //FundTranferP2PEnabled flag must be enabled to transfer fund.
-$lang['11039'] = 'From and To account cannot be same.'; //Source card and destination card must not be same
-$lang['11041'] = 'Invalid source account for fund transfer'; //Valid source account number must be configured for a CPG for fund transfer
-$lang['11042'] = 'The request KYC details does not match Customer KYC details'; //KYC details sent in PPIKYCDetailsOld is incorrect
-$lang['11043'] = 'Downgrade from Full to Minimum or No KYC is not allowed '; //PPI Customer tries to downgrade from Full KYC to Minimum KYC or no KYC
-$lang['11044'] = 'Incomplete or invalid beneficiary details in the request.'; //When invalid beneficiary details are sent in a request or if mandatory beneficiary details are missing
-$lang['11046'] = 'The Customer KYC Details Already Exists'; //KYC details sent in PPIKYCDetailsNew is already associated with another customer
-$lang['11047'] = 'Sorry we are experiencing an error, please try after some time'; //If there is failure response from shift API, this response is sent to the end customer
-$lang['11050'] = 'PPI program is not enabled'; //If a PPI program is not enabled/activated for the given customer
-$lang['11051'] = 'Adding beneficiary is not supported'; //If a PPI program customer does not have Full KYC status
-$lang['11052'] = 'Maximum limit of adding beneficiaries'; //If a customer is trying to add more Beneficiaries than the maximum limit configured at the system
-$lang['11053'] = 'Monthly  transaction limit is exceeded'; //If a customer tries to transfer fund more than the preconfigured monthly transfer limit
-$lang['11055'] = 'Validation failed at Payment Gateway'; //If balance is insufficient in the account or there is some issue with the partner bank
-$lang['11056'] = 'Transaction cancelled'; //If transaction is cancelled
-$lang['11057'] = 'Account validation failed'; //If validation failure occurs at payout module level
-$lang['11058'] = 'Transaction Rejected'; //If transaction is rejected
-$lang['11060'] = 'Beneficiary details already exist  '; //If Beneficiary is already added
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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
+3k2EUuUDGu1D9jUuM0qq1I79u66vyDAWW0==

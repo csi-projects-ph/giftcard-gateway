@@ -1,165 +1,106 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
-
-/**
- * Authorization_Token
- * ----------------------------------------------------------
- * API Token Generate/Validation
- * 
- * @author: Jeevan Lal
- * @version: 0.0.1
- */
-
-require_once APPPATH . 'third_party/php-jwt/JWT.php';
-require_once APPPATH . 'third_party/php-jwt/BeforeValidException.php';
-require_once APPPATH . 'third_party/php-jwt/ExpiredException.php';
-require_once APPPATH . 'third_party/php-jwt/SignatureInvalidException.php';
-
-use \Firebase\JWT\JWT;
-
-class Authorization_Token 
-{
-    /**
-     * Token Key
-     */
-    protected $token_key;
-
-    /**
-     * Token algorithm
-     */
-    protected $token_algorithm;
-
-    /**
-     * Token Request Header Name
-     */
-    protected $token_header;
-
-    /**
-     * Token Expire Time
-     */
-    protected $token_expire_time; 
-
-
-    public function __construct()
-	{
-        $this->CI =& get_instance();
-
-        /** 
-         * jwt config file load
-         */
-        $this->CI->load->config('jwt');
-
-        /**
-         * Load Config Items Values 
-         */
-        $this->token_key        = $this->CI->config->item('jwt_key');
-        $this->token_algorithm  = $this->CI->config->item('jwt_algorithm');
-        $this->token_header  = $this->CI->config->item('token_header');
-        $this->token_expire_time  = $this->CI->config->item('token_expire_time');
-    }
-
-    /**
-     * Generate Token
-     * @param: {array} data
-     */
-    public function generateToken($data = null)
-    {
-        if ($data AND is_array($data))
-        {
-            // add api time key in user array()
-            $data['API_TIME'] = time();
-
-            try {
-                return JWT::encode($data, $this->token_key, $this->token_algorithm);
-            }
-            catch(Exception $e) {
-                return 'Message: ' .$e->getMessage();
-            }
-        } else {
-            return "Token Data Undefined!";
-        }
-    }
-
-    /**
-     * Validate Token with Header
-     * @return : user informations
-     */
-    public function validateToken()
-    {
-        /**
-         * Request All Headers
-         */
-        $headers = $this->CI->input->request_headers();
-        
-        /**
-         * Authorization Header Exists
-         */
-        $token_data = $this->tokenIsExist($headers);
-        if($token_data['status'] === TRUE)
-        {
-            try
-            {
-                /**
-                 * Token Decode
-                 */
-                try {
-                    $token_decode = JWT::decode($token_data['token'], $this->token_key, array($this->token_algorithm));
-                }
-                catch(Exception $e) {
-                    return ['status' => FALSE, 'message' => $e->getMessage()];
-                }
-
-                if(!empty($token_decode) AND is_object($token_decode))
-                {
-                    // Check Token API Time [API_TIME]
-                    if (empty($token_decode->API_TIME OR !is_numeric($token_decode->API_TIME))) {
-                        
-                        return ['status' => FALSE, 'message' => 'Token Time Not Define!'];
-                    }
-                    else
-                    {
-                        /**
-                         * Check Token Time Valid 
-                         */
-                        $time_difference = strtotime('now') - $token_decode->API_TIME;
-                        if( $time_difference >= $this->token_expire_time )
-                        {
-                            return ['status' => FALSE, 'message' => 'Token Time Expire.'];
-
-                        }else
-                        {
-                            /**
-                             * All Validation False Return Data
-                             */
-                            return ['status' => TRUE, 'data' => $token_decode];
-                        }
-                    }
-                    
-                }else{
-                    return ['status' => FALSE, 'message' => 'Forbidden'];
-                }
-            }
-            catch(Exception $e) {
-                return ['status' => FALSE, 'message' => $e->getMessage()];
-            }
-        }else
-        {
-            // Authorization Header Not Found!
-            return ['status' => FALSE, 'message' => $token_data['message'] ];
-        }
-    }
-
-    /**
-     * Token Header Check
-     * @param: request headers
-     */
-    private function tokenIsExist($headers)
-    {
-        if(!empty($headers) AND is_array($headers)) {
-            foreach ($headers as $header_name => $header_value) {
-                if (strtolower(trim($header_name)) == strtolower(trim($this->token_header)))
-                    return ['status' => TRUE, 'token' => $header_value];
-            }
-        }
-        return ['status' => FALSE, 'message' => 'Token is not defined.'];
-    }
-}
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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
+mu/Xz0+YrzHmBG==

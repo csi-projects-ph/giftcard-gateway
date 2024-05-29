@@ -4,7 +4,7 @@ Headers
 Signature: 3739237d6d5c9120862241d37fda62a3849d120d7b2d2a815fd20c07c9d7d0b0
 
 authors: Bryan Iban, Dhante De Leon, Kim Alcoy
-version: 2.5.0
+version: 2.9.0
 copyright (c) 2023, Channel Solutions Inc.
 
 *******************
@@ -41,6 +41,46 @@ Terminal ID handling format for New GC Host
 Updated file
 	- csi_helper.php
 	- Settlement.php
+
+2.6.0
+Changed handling of Transaction ID sequence:
+	- csi_helper.php
+
+2.7.0
+Time added to DateAtClient parameter value
+TransactionID parameter should not be incremented except in redeem
+	- Redemption.php
+
+2.8.0
+Time added to DateAtClient parameter value
+Removed transaction record checking in Reversal, Void, ReverseVoid
+Added conditional statement in retrieving 'auth_token' in validateTermID()
+	- Settlement.php
+	- Redemption.php
+	- csi_helper.php
+
+2.9.0
+Change Request #CRF-GCHA-2024-05
+Added 'REVERSALFLAG' to transactions table
+Removed Invalid Stan in Balance Inquiry and Settlement
+Added Condition when token id is NULL
+	- Redemption.php
+	- Settlement.php
+	- csi_helper.php
+
+2.9.1
+Removed unique Invoice Number validation due to possibility of reset in EFT
+	- Redemptions.php
+
+2.9.2
+Parameter added for Authorization API
+Revert ('RESPONSECODE' => '0') to find successful redemption and return to Host RC 99900
+Added time (His) to IdempotencyKey
+Parameter added for PineLabs Credentials, database-based
+	- mt_sys_properties table
+	- REST_Controller.php
+	- Redemptions.php
+
 
 *******************
 Server Requirements

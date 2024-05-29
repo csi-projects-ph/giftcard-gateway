@@ -1,529 +1,200 @@
-<?php
-namespace Restserver\Libraries;
-use Exception;
-
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-/**
- * Format class
- * Help convert between various formats such as XML, JSON, CSV, etc.
- *
- * @author    Phil Sturgeon, Chris Kacerguis, @softwarespot
- * @license   http://www.dbad-license.org/
- */
-class Format {
-
-    /**
-     * Array output format
-     */
-    const ARRAY_FORMAT = 'array';
-
-    /**
-     * Comma Separated Value (CSV) output format
-     */
-    const CSV_FORMAT = 'csv';
-
-    /**
-     * Json output format
-     */
-    const JSON_FORMAT = 'json';
-
-    /**
-     * HTML output format
-     */
-    const HTML_FORMAT = 'html';
-
-    /**
-     * PHP output format
-     */
-    const PHP_FORMAT = 'php';
-
-    /**
-     * Serialized output format
-     */
-    const SERIALIZED_FORMAT = 'serialized';
-
-    /**
-     * XML output format
-     */
-    const XML_FORMAT = 'xml';
-
-    /**
-     * Default format of this class
-     */
-    const DEFAULT_FORMAT = self::JSON_FORMAT; // Couldn't be DEFAULT, as this is a keyword
-
-    /**
-     * CodeIgniter instance
-     *
-     * @var object
-     */
-    private $_CI;
-
-    /**
-     * Data to parse
-     *
-     * @var mixed
-     */
-    protected $_data = [];
-
-    /**
-     * Type to convert from
-     *
-     * @var string
-     */
-    protected $_from_type = NULL;
-
-    /**
-     * DO NOT CALL THIS DIRECTLY, USE factory()
-     *
-     * @param NULL $data
-     * @param NULL $from_type
-     * @throws Exception
-     */
-
-    public function __construct($data = NULL, $from_type = NULL)
-    {
-        // Get the CodeIgniter reference
-        $this->_CI = &get_instance();
-
-        // Load the inflector helper
-        $this->_CI->load->helper('inflector');
-
-        // If the provided data is already formatted we should probably convert it to an array
-        if ($from_type !== NULL)
-        {
-            if (method_exists($this, '_from_'.$from_type))
-            {
-                $data = call_user_func([$this, '_from_'.$from_type], $data);
-            }
-            else
-            {
-                throw new Exception('Format class does not support conversion from "'.$from_type.'".');
-            }
-        }
-
-        // Set the member variable to the data passed
-        $this->_data = $data;
-    }
-
-    /**
-     * Create an instance of the format class
-     * e.g: echo $this->format->factory(['foo' => 'bar'])->to_csv();
-     *
-     * @param mixed $data Data to convert/parse
-     * @param string $from_type Type to convert from e.g. json, csv, html
-     *
-     * @return object Instance of the format class
-     */
-    public static function factory($data, $from_type = NULL)
-    {
-        // $class = __CLASS__;
-        // return new $class();
-
-        return new static($data, $from_type);
-    }
-
-    // FORMATTING OUTPUT ---------------------------------------------------------
-
-    /**
-     * Format data as an array
-     *
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @return array Data parsed as an array; otherwise, an empty array
-     */
-    public function to_array($data = NULL)
-    {
-        // If no data is passed as a parameter, then use the data passed
-        // via the constructor
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        // Cast as an array if not already
-        if (is_array($data) === FALSE)
-        {
-            $data = (array) $data;
-        }
-
-        $array = [];
-        foreach ((array) $data as $key => $value)
-        {
-            if (is_object($value) === TRUE || is_array($value) === TRUE)
-            {
-                $array[$key] = $this->to_array($value);
-            }
-            else
-            {
-                $array[$key] = $value;
-            }
-        }
-
-        return $array;
-    }
-
-    /**
-     * Format data as XML
-     *
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @param NULL $structure
-     * @param string $basenode
-     * @return mixed
-     */
-    public function to_xml($data = NULL, $structure = NULL, $basenode = 'xml')
-    {
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        if ($structure === NULL)
-        {
-            $structure = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$basenode />");
-        }
-
-        // Force it to be something useful
-        if (is_array($data) === FALSE && is_object($data) === FALSE)
-        {
-            $data = (array) $data;
-        }
-
-        foreach ($data as $key => $value)
-        {
-
-            //change false/true to 0/1
-            if (is_bool($value))
-            {
-                $value = (int) $value;
-            }
-
-            // no numeric keys in our xml please!
-            if (is_numeric($key))
-            {
-                // make string key...
-                $key = (singular($basenode) != $basenode) ? singular($basenode) : 'item';
-            }
-
-            // replace anything not alpha numeric
-            $key = preg_replace('/[^a-z_\-0-9]/i', '', $key);
-
-            if ($key === '_attributes' && (is_array($value) || is_object($value)))
-            {
-                $attributes = $value;
-                if (is_object($attributes))
-                {
-                    $attributes = get_object_vars($attributes);
-                }
-
-                foreach ($attributes as $attribute_name => $attribute_value)
-                {
-                    $structure->addAttribute($attribute_name, $attribute_value);
-                }
-            }
-            // if there is another array found recursively call this function
-            elseif (is_array($value) || is_object($value))
-            {
-                $node = $structure->addChild($key);
-
-                // recursive call.
-                $this->to_xml($value, $node, $key);
-            }
-            else
-            {
-                // add single node.
-                $value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
-
-                $structure->addChild($key, $value);
-            }
-        }
-
-        return $structure->asXML();
-    }
-
-    /**
-     * Format data as HTML
-     *
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @return mixed
-     */
-    public function to_html($data = NULL)
-    {
-        // If no data is passed as a parameter, then use the data passed
-        // via the constructor
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        // Cast as an array if not already
-        if (is_array($data) === FALSE)
-        {
-            $data = (array) $data;
-        }
-
-        // Check if it's a multi-dimensional array
-        if (isset($data[0]) && count($data) !== count($data, COUNT_RECURSIVE))
-        {
-            // Multi-dimensional array
-            $headings = array_keys($data[0]);
-        }
-        else
-        {
-            // Single array
-            $headings = array_keys($data);
-            $data = [$data];
-        }
-
-        // Load the table library
-        $this->_CI->load->library('table');
-
-        $this->_CI->table->set_heading($headings);
-
-        foreach ($data as $row)
-        {
-            // Suppressing the "array to string conversion" notice
-            // Keep the "evil" @ here
-            $row = @array_map('strval', $row);
-
-            $this->_CI->table->add_row($row);
-        }
-
-        return $this->_CI->table->generate();
-    }
-
-    /**
-     * @link http://www.metashock.de/2014/02/create-csv-file-in-memory-php/
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @param string $delimiter The optional delimiter parameter sets the field
-     * delimiter (one character only). NULL will use the default value (,)
-     * @param string $enclosure The optional enclosure parameter sets the field
-     * enclosure (one character only). NULL will use the default value (")
-     * @return string A csv string
-     */
-    public function to_csv($data = NULL, $delimiter = ',', $enclosure = '"')
-    {
-        // Use a threshold of 1 MB (1024 * 1024)
-        $handle = fopen('php://temp/maxmemory:1048576', 'w');
-        if ($handle === FALSE)
-        {
-            return NULL;
-        }
-
-        // If no data is passed as a parameter, then use the data passed
-        // via the constructor
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        // If NULL, then set as the default delimiter
-        if ($delimiter === NULL)
-        {
-            $delimiter = ',';
-        }
-
-        // If NULL, then set as the default enclosure
-        if ($enclosure === NULL)
-        {
-            $enclosure = '"';
-        }
-
-        // Cast as an array if not already
-        if (is_array($data) === FALSE)
-        {
-            $data = (array) $data;
-        }
-
-        // Check if it's a multi-dimensional array
-        if (isset($data[0]) && count($data) !== count($data, COUNT_RECURSIVE))
-        {
-            // Multi-dimensional array
-            $headings = array_keys($data[0]);
-        }
-        else
-        {
-            // Single array
-            $headings = array_keys($data);
-            $data = [$data];
-        }
-
-        // Apply the headings
-        fputcsv($handle, $headings, $delimiter, $enclosure);
-
-        foreach ($data as $record)
-        {
-            // If the record is not an array, then break. This is because the 2nd param of
-            // fputcsv() should be an array
-            if (is_array($record) === FALSE)
-            {
-                break;
-            }
-
-            // Suppressing the "array to string conversion" notice.
-            // Keep the "evil" @ here.
-            $record = @ array_map('strval', $record);
-
-            // Returns the length of the string written or FALSE
-            fputcsv($handle, $record, $delimiter, $enclosure);
-        }
-
-        // Reset the file pointer
-        rewind($handle);
-
-        // Retrieve the csv contents
-        $csv = stream_get_contents($handle);
-
-        // Close the handle
-        fclose($handle);
-
-        // Convert UTF-8 encoding to UTF-16LE which is supported by MS Excel
-        $csv = mb_convert_encoding($csv, 'UTF-16LE', 'UTF-8');
-
-        return $csv;
-    }
-
-    /**
-     * Encode data as json
-     *
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @return string Json representation of a value
-     */
-    public function to_json($data = NULL)
-    {
-        // If no data is passed as a parameter, then use the data passed
-        // via the constructor
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        // Get the callback parameter (if set)
-        $callback = $this->_CI->input->get('callback');
-
-        if (empty($callback) === TRUE)
-        {
-            return json_encode($data, JSON_UNESCAPED_UNICODE);
-        }
-
-        // We only honour a jsonp callback which are valid javascript identifiers
-        elseif (preg_match('/^[a-z_\$][a-z0-9\$_]*(\.[a-z_\$][a-z0-9\$_]*)*$/i', $callback))
-        {
-            // Return the data as encoded json with a callback
-            return $callback.'('.json_encode($data, JSON_UNESCAPED_UNICODE).');';
-        }
-
-        // An invalid jsonp callback function provided.
-        // Though I don't believe this should be hardcoded here
-        $data['warning'] = 'INVALID JSONP CALLBACK: '.$callback;
-
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
-     * Encode data as a serialized array
-     *
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @return string Serialized data
-     */
-    public function to_serialized($data = NULL)
-    {
-        // If no data is passed as a parameter, then use the data passed
-        // via the constructor
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        return serialize($data);
-    }
-
-    /**
-     * Format data using a PHP structure
-     *
-     * @param mixed|NULL $data Optional data to pass, so as to override the data passed
-     * to the constructor
-     * @return mixed String representation of a variable
-     */
-    public function to_php($data = NULL)
-    {
-        // If no data is passed as a parameter, then use the data passed
-        // via the constructor
-        if ($data === NULL && func_num_args() === 0)
-        {
-            $data = $this->_data;
-        }
-
-        return var_export($data, TRUE);
-    }
-
-    // INTERNAL FUNCTIONS
-
-    /**
-     * @param string $data XML string
-     * @return array XML element object; otherwise, empty array
-     */
-    protected function _from_xml($data)
-    {
-        return $data ? (array) simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA) : [];
-    }
-
-    /**
-     * @param string $data CSV string
-     * @param string $delimiter The optional delimiter parameter sets the field
-     * delimiter (one character only). NULL will use the default value (,)
-     * @param string $enclosure The optional enclosure parameter sets the field
-     * enclosure (one character only). NULL will use the default value (")
-     * @return array A multi-dimensional array with the outer array being the number of rows
-     * and the inner arrays the individual fields
-     */
-    protected function _from_csv($data, $delimiter = ',', $enclosure = '"')
-    {
-        // If NULL, then set as the default delimiter
-        if ($delimiter === NULL)
-        {
-            $delimiter = ',';
-        }
-
-        // If NULL, then set as the default enclosure
-        if ($enclosure === NULL)
-        {
-            $enclosure = '"';
-        }
-
-        return str_getcsv($data, $delimiter, $enclosure);
-    }
-
-    /**
-     * @param string $data Encoded json string
-     * @return mixed Decoded json string with leading and trailing whitespace removed
-     */
-    protected function _from_json($data)
-    {
-        return json_decode(trim($data));
-    }
-
-    /**
-     * @param string $data Data to unserialize
-     * @return mixed Unserialized data
-     */
-    protected function _from_serialize($data)
-    {
-        return unserialize(trim($data));
-    }
-
-    /**
-     * @param string $data Data to trim leading and trailing whitespace
-     * @return string Data with leading and trailing whitespace removed
-     */
-    protected function _from_php($data)
-    {
-        return trim($data);
-    }
-}
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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

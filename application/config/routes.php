@@ -1,79 +1,55 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-/*
-| -------------------------------------------------------------------------
-| URI ROUTING
-| -------------------------------------------------------------------------
-| This file lets you re-map URI requests to specific controller functions.
-|
-| Typically there is a one-to-one relationship between a URL string
-| and its corresponding controller class/method. The segments in a
-| URL normally follow this pattern:
-|
-|	example.com/class/method/id/
-|
-| In some instances, however, you may want to remap this relationship
-| so that a different class/function is called than the one
-| corresponding to the URL.
-|
-| Please see the user guide for complete details:
-|
-|	https://codeigniter.com/user_guide/general/routing.html
-|
-| -------------------------------------------------------------------------
-| RESERVED ROUTES
-| -------------------------------------------------------------------------
-|
-| There are three reserved routes:
-|
-|	$route['default_controller'] = 'welcome';
-|
-| This route indicates which controller class should be loaded if the
-| URI contains no data. In the above example, the "welcome" class
-| would be loaded.
-|
-|	$route['404_override'] = 'errors/page_missing';
-|
-| This route will tell the Router which controller/method to use if those
-| provided in the URL cannot be matched to a valid route.
-|
-|	$route['translate_uri_dashes'] = FALSE;
-|
-| This is not exactly a route, but allows you to automatically route
-| controller and method names that contain dashes. '-' isn't a valid
-| class or method name character, so it requires translation.
-| When you set this option to TRUE, it will replace ALL dashes in the
-| controller and method URI segments.
-|
-| Examples:	my-controller/index	-> my_controller/index
-|		my-controller/my-method	-> my_controller/my_method
-*/
-$route['default_controller'] = 'Site';
-$route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
-
-$route['testfunc'] = 'api/Redemptions/test_signon';
-
-
-
-$route['redeem'] = 'api/Redemptions/redeem';
-$route['void'] = 'api/Redemptions/void';
-$route['reverse'] = 'api/Redemptions/reverse';
-$route['reversevoid'] = 'api/Redemptions/rev_void';
-
-$route['balance'] = 'api/Settlement/balance';
-$route['settlement'] = 'api/Settlement/settlement';
-
-$route['register'] = 'api/User/register';
-$route['login'] = 'api/User/login';
-$route['logout'] = 'api/User/logout';
-$route['reGenToken'] = 'api/Token/reGenToken';
-
-//error simulator
-$route['simulate/balance'] = 'api/Simulator/balance';
-$route['simulate/redeem'] = 'api/Simulator/redeem';
-$route['simulate/void'] = 'api/Simulator/void';
-$route['simulate/reverse'] = 'api/Simulator/reverse';
-$route['simulate/reversevoid'] = 'api/Simulator/rev_void';
-$route['simulate/settlement'] = 'api/Simulator/settlement';
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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
+uu+sxIzEpm==
