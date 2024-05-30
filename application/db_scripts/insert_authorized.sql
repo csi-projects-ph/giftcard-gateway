@@ -1,0 +1,1 @@
+INSERT INTO `mt_sys_properties` VALUES ('PL_authorized','authorize',1,'CSI Gateway. Should always end with a forward slash')
