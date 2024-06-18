@@ -66,7 +66,6 @@ Removed Invalid Stan in Balance Inquiry and Settlement
 Added Condition when token id is NULL
 	- Redemption.php
 	- Settlement.php
-	- csi_helper.php
 
 2.9.1
 Removed unique Invoice Number validation due to possibility of reset in EFT
@@ -80,6 +79,10 @@ Parameter added for PineLabs Credentials, database-based
 	- mt_sys_properties table
 	- REST_Controller.php
 	- Redemptions.php
+
+2.9.3
+Added lookup for TID/MID Handling for GC EFT Host (CRF-GCHA-2024-08)
+	- csi_helper.php
 
 
 *******************
