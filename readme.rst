@@ -84,6 +84,11 @@ Parameter added for PineLabs Credentials, database-based
 Added lookup for TID/MID Handling for GC EFT Host (CRF-GCHA-2024-08)
 	- csi_helper.php
 
+2.9.4
+Fix RC:98 upon 2nd redemption after settlement
+	- Settlement.php
+	- REST_Controller.php
+
 
 *******************
 Server Requirements
